@@ -1,0 +1,50 @@
+
+メモリ設定
+
+名前           原点             長さ             属性
+*default*        0x0000000000000000 0xffffffffffffffff
+
+リンカスクリプトおよびメモリマップ
+
+                0x0000000000280000                . = 0x280000
+
+.text           0x0000000000280000       0x32
+                0x0000000000280000                _text_start = .
+ *(.text)
+ .text          0x0000000000280000       0x27 main.o
+                0x0000000000280000                kernel_main
+ *fill*         0x0000000000280027        0x9 
+ .text          0x0000000000280030        0x2 nasmfunc.o
+                0x0000000000280030                io_hlt
+                0x0000000000280032                _text_end = .
+
+.rodata         0x0000000000280032        0x0
+                0x0000000000280032                _rodata_start = .
+ *(.rodata)
+                0x0000000000280032                _rodata_end = .
+
+.eh_frame       0x0000000000280034       0x2c
+ .eh_frame      0x0000000000280034       0x2c main.o
+
+.data           0x0000000000280060        0x0
+                0x0000000000280060                _data_start = .
+ *(.data)
+ .data          0x0000000000280060        0x0 main.o
+                0x0000000000280060                _data_end = .
+
+.bss            0x0000000000280060        0x0
+                0x0000000000280060                _bss_start = .
+ *(.bss)
+ .bss           0x0000000000280060        0x0 main.o
+                0x0000000000280060                _bss_end = .
+LOAD main.o
+LOAD nasmfunc.o
+OUTPUT(kernel.img binary)
+
+.comment        0x0000000000000000       0x25
+ .comment       0x0000000000000000       0x25 main.o
+
+.note.GNU-stack
+                0x0000000000000000        0x0
+ .note.GNU-stack
+                0x0000000000000000        0x0 main.o
