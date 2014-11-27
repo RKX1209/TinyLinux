@@ -29,7 +29,6 @@ img :
 
 clean :
 	$(SUDO) $(RM) *.img
-	$(SUDO) $(RM) *.o
 
 %.o  :  %.c Makefile
 	$(CC) -c -o $*.o $*.c -O2 -Wall

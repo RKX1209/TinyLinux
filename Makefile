@@ -1,3 +1,4 @@
+IMGS		= $(BOOT)/loader.img $(KERNEL)/kernel.img
 HOME_DIR	= "$(CURDIR)"
 USER_NAME	= rkx
 
@@ -22,9 +23,11 @@ GRUB_INSTALL	= grub-install
 
 #---Module path-------
 BOOT		= boot
-ARCH		= arch
-ARCH_BOOT	= arch/i386/boot
 KERNEL		= kernel
+ARCH		= arch/i386
+ARCH_BOOT	= $(ARCH)/boot
+ARCH_KERNEL	= $(ARCH)/kernel
+
 #---------------------
 
 #---Virtual Loop Device---
@@ -38,18 +41,15 @@ MNT_PATH	= /media/$(USER_NAME)
 MAIN_O		= $(KERNEL)/main.o
 MAIN_C		= $(KERNEL)/main.c
 
-arch/i386/boot/setup.img : Makefile
-	($(CD) $(ARCH_BOOT);$(MAKE))
-boot/loader.img : Makefile
-	($(CD) $(BOOT);$(MAKE))
-kernel/kernel.img : Makefile
-	($(CD) $(KERNEL);$(MAKE))
 
-Abyon.img : $(BOOT)/loader.img $(ARCH_BOOT)/setup.img $(KERNEL)/kernel.img Makefile
-	$(CAT) $(BOOT)/loader.img $(ARCH_BOOT)/setup.img $(KERNEL)/kernel.img > AbyonPlain.img
-	$(RM)	$(BOOT)/*.img
-	$(RM)	$(ARCH_BOOT)/*.img
-	$(RM)	$(KERNEL)/*.img
+$(BOOT)/loader.img : Makefile
+	($(CD) $(BOOT);$(MAKE))
+
+$(KERNEL)/kernel.img : Makefile
+	($(CD) $(KERNEL);$(MAKE) img)
+
+Abyon.img : $(IMGS) Makefile
+	$(CAT) $(IMGS) > AbyonPlain.img
 	$(DD) if=AbyonPlain.img of=Abyon.img conv=sync
 
 default :
@@ -70,7 +70,8 @@ del :
 
 clean :
 	$(SUDO) $(RM) *.img
-	$(SUDO) $(RM) *.o
+	($(CD) $(BOOT);$(MAKE) clean)
+	($(CD) $(KERNEL);$(MAKE) clean)
 
 %.o  :  %.c Makefile
 	$(CC) -c -o $*.o $*.c -O2 -Wall

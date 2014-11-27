@@ -1,4 +1,9 @@
 
+割り当てている共通シンボル
+共通シンボル        サイズ            ファイル
+
+bss                 0x4               main.o
+
 メモリ設定
 
 名前           原点             長さ             属性
@@ -8,41 +13,60 @@
 
                 0x0000000000280000                . = 0x280000
 
-.text           0x0000000000280000       0x32
+.text           0x0000000000280000       0xa2
                 0x0000000000280000                _text_start = .
  *(.text)
- .text          0x0000000000280000       0x27 main.o
-                0x0000000000280000                kernel_main
- *fill*         0x0000000000280027        0x9 
- .text          0x0000000000280030        0x2 nasmfunc.o
-                0x0000000000280030                io_hlt
-                0x0000000000280032                _text_end = .
+ .text          0x0000000000280000       0x69 ../arch/i386/kernel/head.o
+                0x0000000000280000                startup_32
+ *fill*         0x0000000000280069        0x7 
+ .text          0x0000000000280070       0x27 main.o
+                0x0000000000280070                kernel_main
+ *fill*         0x0000000000280097        0x9 
+ .text          0x00000000002800a0        0x2 nasmfunc.o
+                0x00000000002800a0                io_hlt
+                0x00000000002800a2                _text_end = .
 
-.rodata         0x0000000000280032        0x0
-                0x0000000000280032                _rodata_start = .
+.iplt           0x00000000002800b0        0x0
+ .iplt          0x0000000000000000        0x0 ../arch/i386/kernel/head.o
+
+.rel.dyn        0x00000000002800a4        0x0
+ .rel.iplt      0x0000000000000000        0x0 ../arch/i386/kernel/head.o
+ .rel.text      0x0000000000000000        0x0 ../arch/i386/kernel/head.o
+
+.rodata         0x00000000002800a2        0x0
+                0x00000000002800a2                _rodata_start = .
  *(.rodata)
-                0x0000000000280032                _rodata_end = .
+                0x00000000002800a2                _rodata_end = .
 
-.eh_frame       0x0000000000280034       0x2c
- .eh_frame      0x0000000000280034       0x2c main.o
+.eh_frame       0x00000000002800a4       0x2c
+ .eh_frame      0x00000000002800a4       0x2c main.o
 
-.data           0x0000000000280060        0x0
-                0x0000000000280060                _data_start = .
+.data           0x00000000002800d0      0x13a
+                0x00000000002800d0                _data_start = .
  *(.data)
- .data          0x0000000000280060        0x0 main.o
-                0x0000000000280060                _data_end = .
+ .data          0x00000000002800d0      0x13a ../arch/i386/kernel/head.o
+ .data          0x000000000028020a        0x0 main.o
+                0x000000000028020a                _data_end = .
 
-.bss            0x0000000000280060        0x0
-                0x0000000000280060                _bss_start = .
+.igot.plt       0x000000000028020c        0x0
+ .igot.plt      0x0000000000000000        0x0 ../arch/i386/kernel/head.o
+
+.bss            0x000000000028020c     0x2804
+                0x000000000028020c                _bss_start = .
  *(.bss)
- .bss           0x0000000000280060        0x0 main.o
-                0x0000000000280060                _bss_end = .
+ .bss           0x000000000028020c     0x2800 ../arch/i386/kernel/head.o
+ .bss           0x0000000000282a0c        0x0 main.o
+                0x0000000000282a0c                _bss_end = .
+ COMMON         0x0000000000282a0c        0x4 main.o
+                0x0000000000282a0c                bss
+LOAD ../arch/i386/kernel/head.o
 LOAD main.o
 LOAD nasmfunc.o
-OUTPUT(kernel.img binary)
+OUTPUT(kernel.elf elf32-i386)
 
-.comment        0x0000000000000000       0x25
- .comment       0x0000000000000000       0x25 main.o
+.comment        0x0000000000000000       0x24
+ .comment       0x0000000000000000       0x24 main.o
+                                         0x25 (緩和前のサイズ)
 
 .note.GNU-stack
                 0x0000000000000000        0x0

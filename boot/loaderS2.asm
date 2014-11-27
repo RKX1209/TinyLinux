@@ -48,51 +48,51 @@ boot2:
 	MOV	SS,AX
 	MOV	SP,0xfffc
 
-	;; VBE(?)
-	MOV		AX,0x9000
-	MOV		ES,AX
-	MOV		DI,0
-	MOV		AX,0x4f00
-	INT		0x10
-	CMP		AX,0x004f
-	JNE		scrn320
+	;; ;; VBE(?)
+	;; MOV		AX,0x9000
+	;; MOV		ES,AX
+	;; MOV		DI,0
+	;; MOV		AX,0x4f00
+	;; INT		0x10
+	;; CMP		AX,0x004f
+	;; JNE		scrn320
 
-	;; VBE version(?)
+	;; ;; VBE version(?)
 
-	MOV		AX,[ES:DI+4]
-	CMP		AX,0x0200
-	JB		scrn320			; if (AX < 0x0200) goto scrn320
+	;; MOV		AX,[ES:DI+4]
+	;; CMP		AX,0x0200
+	;; JB		scrn320			; if (AX < 0x0200) goto scrn320
 
-	;; Monitor mode(?)
-	MOV		CX,VBEMODE
-	MOV		AX,0x4f01
-	INT		0x10
-	CMP		AX,0x004f
-	JNE		scrn320
+	;; ;; Monitor mode(?)
+	;; MOV		CX,VBEMODE
+	;; MOV		AX,0x4f01
+	;; INT		0x10
+	;; CMP		AX,0x004f
+	;; JNE		scrn320
 
-	;; Confirm monitor mode(?)
+	;; ;; Confirm monitor mode(?)
 
-	CMP		BYTE [ES:DI+0x19],8
-	JNE		scrn320
-	CMP		BYTE [ES:DI+0x1b],4
-	JNE		scrn320
-	MOV		AX,[ES:DI+0x00]
-	AND		AX,0x0080
-	JZ		scrn320
+	;; CMP		BYTE [ES:DI+0x19],8
+	;; JNE		scrn320
+	;; CMP		BYTE [ES:DI+0x1b],4
+	;; JNE		scrn320
+	;; MOV		AX,[ES:DI+0x00]
+	;; AND		AX,0x0080
+	;; JZ		scrn320
 
-	;; Change monitor mode(?)
+	;; ;; Change monitor mode(?)
 
-	MOV		BX,VBEMODE+0x4000
-	MOV		AX,0x4f02
-	INT		0x10
-	MOV		BYTE [VMODE],8
-	MOV		AX,[ES:DI+0x12]
-	MOV		[SCRNX],AX
-	MOV		AX,[ES:DI+0x14]
-	MOV		[SCRNY],AX
-	MOV		EAX,[ES:DI+0x28]
-	MOV		[VRAM],EAX
-	JMP		keystatus
+	;; MOV		BX,VBEMODE+0x4000
+	;; MOV		AX,0x4f02
+	;; INT		0x10
+	;; MOV		BYTE [VMODE],8
+	;; MOV		AX,[ES:DI+0x12]
+	;; MOV		[SCRNX],AX
+	;; MOV		AX,[ES:DI+0x14]
+	;; MOV		[SCRNY],AX
+	;; MOV		EAX,[ES:DI+0x28]
+	;; MOV		[VRAM],EAX
+	;; JMP		keystatus
 
 scrn320:
 	MOV		AL,0x13

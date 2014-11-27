@@ -1,13 +1,14 @@
-OBJS_PROTUNIX = Main.o
+OBJS		= $(ARCH_KERNEL)/head.o main.o nasmfunc.o
 
-HOME_DIR	= "$(CURDIR)"
+HOME_DIR	= ..
 USER_NAME	= rkx
 
 #---Build Command---
 CC		= gcc
-CFLAGS		= -fomit-frame-pointer -I$(HOME_DIR)/include -masm=intel -Wall
+CFLAGS		= -fomit-frame-pointer -I$(HOME_DIR)/include -Wall
 LFLAGS		= -m elf_i386 --oformat binary -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
-ASFLAGS		= -msyntax=intel -march=i686 --32
+LFLAGS2		= -m elf_i386 -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
+ASFLAGS		= -c -m32 -I$(HOME_DIR)/include
 NASM		= nasm
 LD		= ld
 DD		= dd
@@ -20,23 +21,29 @@ CD		= cd
 CAT		= cat
 SUDO		= sudo
 
+ARCH		= ../arch/i386
+ARCH_BOOT	= $(ARCH)/boot
+ARCH_KERNEL	= $(ARCH)/kernel
+
 LD_SCRIPT_PATH 	= ../ldscript
 LD_SCRIPT	= $(LD_SCRIPT_PATH)/kernel_ld
-KERNEL_ENTRY	= kernel_main
+KERNEL_ENTRY	= startup_32
 
-kernel.img : main.o nasmfunc.o Makefile
-	$(LD) $(LFLAGS) -o kernel.img main.o nasmfunc.o
+$(ARCH_KERNEL)/head.o : $(ARCH_KERNEL)/head.S Makefile
+	$(CC) -o $(ARCH_KERNEL)/head.o $(ARCH_KERNEL)/head.S $(ASFLAGS)
+
+kernel.img : $(OBJS) Makefile
+	$(LD) $(LFLAGS) -o kernel.img $(OBJS)
+	$(LD) $(LFLAGS2) -o kernel.elf $(OBJS)
 
 default :
-	$(MAKE) img
+	$(MAKE) kernel.img
 
 img :
 	$(MAKE) kernel.img
 
 clean :
 	$(SUDO) $(RM) *.img
-	$(SUDO) $(RM) *.o
-
 
 %.o  :  %.c Makefile
 	$(CC) -m32 -c -o $*.o $*.c -O2 -Wall
