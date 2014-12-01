@@ -1,4 +1,5 @@
-OBJS		= $(ARCH_KERNEL)/head.o main.o nasmfunc.o
+OBJS		= $(ARCH_KERNEL)/head.o main.o gasfunc.o $(ARCH_KERNEL)/setup.o \
+		  $(ARCH_MM)/init.o $(MM)/bootmem.o
 
 HOME_DIR	= ..
 USER_NAME	= rkx
@@ -21,16 +22,22 @@ CD		= cd
 CAT		= cat
 SUDO		= sudo
 
-ARCH		= ../arch/i386
+#---Arch path-------------
+ARCH		= ../arch
 ARCH_BOOT	= $(ARCH)/boot
 ARCH_KERNEL	= $(ARCH)/kernel
+ARCH_MM		= $(ARCH)/mm
+#-------------------------
+
+#---MM path-------------
+MM		= ../mm
+#-------------------------
+
 
 LD_SCRIPT_PATH 	= ../ldscript
-LD_SCRIPT	= $(LD_SCRIPT_PATH)/kernel_ld
+LD_SCRIPT	= $(LD_SCRIPT_PATH)/kernel.ld
 KERNEL_ENTRY	= startup_32
 
-$(ARCH_KERNEL)/head.o : $(ARCH_KERNEL)/head.S Makefile
-	$(CC) -o $(ARCH_KERNEL)/head.o $(ARCH_KERNEL)/head.S $(ASFLAGS)
 
 kernel.img : $(OBJS) Makefile
 	$(LD) $(LFLAGS) -o kernel.img $(OBJS)
@@ -46,8 +53,29 @@ clean :
 	$(SUDO) $(RM) *.img
 
 %.o  :  %.c Makefile
-	$(CC) -m32 -c -o $*.o $*.c -O2 -Wall
+	$(CC) -m32 -c -o $*.o $*.c $(CFLAGS)
 
-%.o : %.asm Makefile
-	$(NASM) -f elf32 -o $*.o $*.asm
+%.o :	%.S Makefile
+	$(CC) -o $*.o $*.S $(ASFLAGS)
+
+$(ARCH_KERNEL)/%.o : $(ARCH_KERNEL)/%.c Makefile
+	$(CC) -m32 -c -o $(ARCH_KERNEL)/$*.o $(ARCH_KERNEL)/$*.c $(CFLAGS)
+
+$(ARCH_KERNEL)/%.o : $(ARCH_KERNEL)/%.S Makefile
+	$(CC) -o $(ARCH_KERNEL)/$*.o $(ARCH_KERNEL)/$*.S $(ASFLAGS)
+
+$(ARCH_MM)/%.o : $(ARCH_MM)/%.c Makefile
+	$(CC) -m32 -c -o $(ARCH_MM)/$*.o $(ARCH_MM)/$*.c $(CFLAGS)
+
+$(ARCH_MM)/%.o : $(ARCH_MM)/%.S Makefile
+	$(CC) -o $(ARCH_MM)/$*.o $(ARCH_MM)/$*.S $(ASFLAGS)
+
+$(MM)/%.o : $(MM)/%.c Makefile
+	$(CC) -m32 -c -o $(MM)/$*.o $(MM)/$*.c $(CFLAGS)
+
+$(MM)/%.o : $(MM)/%.S Makefile
+	$(CC) -o $(MM)/$*.o $(MM)/$*.S $(ASFLAGS)
+
+
+
 

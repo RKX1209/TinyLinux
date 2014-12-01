@@ -1,19 +1,9 @@
-   /*Copyright (C) <2014>  <@RKX1209> 
+/*
+ * arch/i386/kernel/head.S
+ * Copyright (C) <2014>  <@RKX1209>
+ */
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 3 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>
-   */
-
+	
 /*
  32-bit kernel entrypoint
 */
@@ -24,6 +14,7 @@
 .global kernel_main
 
 #include <asm/segment.h>
+//#include <asm/pgtable.h>
 
 //.org 0x280000
 startup_32:
@@ -92,6 +83,7 @@ ignore_int:
 	
 	
 .section .bss
+.global swapper_pg_dir
 swapper_pg_dir:
 	.fill 1024,4,0
 empty_zero_page:
