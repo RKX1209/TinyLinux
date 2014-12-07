@@ -19,8 +19,8 @@
 ;------------------------------------------------
 
 
-KERNEL	EQU		0x00280000	
-DSKCDST	EQU		0x00100000
+KERNEL	EQU		0x00100000	
+DSKCDST	EQU		0x00280000
 DSKCSRC	EQU		0x00008000
 	
 VBEMODE	EQU		0x105
@@ -201,7 +201,7 @@ memcpy:
 gdt:
 	RESB	8
 	DW		0xffff,0x0000,0x9200,0x00cf
-	DW		0xffff,0x0000,0x9a28,0x0047
+	DW		0xffff,0x0000,0x9a10,0x0047
 	DW		0	
 gdt_info:
 	DW	8*3-1

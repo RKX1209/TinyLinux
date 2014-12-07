@@ -16,8 +16,10 @@ typedef struct { unsigned long pte_low; } pte_t;
 typedef struct { unsigned long pgd; } pgd_t;
 typedef struct { unsigned long pgprot; } pgprot_t;
 
+
 /* Kernel entry address */
 #define __PAGE_OFFSET		(0xC0000000)
+#define __PHYSICAL_START        (0x00100000)
 #define PAGE_OFFSET		((unsigned long)__PAGE_OFFSET)
 
 #endif

@@ -53,7 +53,8 @@ static void permanent_kmaps_init(pgd_t *pgd_base){
   page_table_range_init(vaddr,vaddr + PAGE_SIZE * LAST_PKMAP,pgd_base);
 
   pgd = swapper_pg_dir + pgd_index(vaddr);
-  pte = pte_virtual_addr(pgd,vaddr);  
+  pte = pte_virtual_addr(pgd,vaddr);
+  pte_t *pkmap_page_table = pte;	
 }
 
 static void kernel_physical_mapping_init(pgd_t *pgd_base) {

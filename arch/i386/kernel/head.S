@@ -7,56 +7,84 @@
 /*
  32-bit kernel entrypoint
 */
-	
+
+
 .text	
 
 .global startup_32
 .global kernel_main
+.global	init_pg_tables_end
 
 #include <asm/segment.h>
-//#include <asm/pgtable.h>
-
-//.org 0x280000
+#define __PAGE_OFFSET 0xC0000000
+#define INIT_MAP_BEYOND_END	(128*1024)
+	
+/* "foo - __PAGE_OFFSET" expression must be used
+ * if you wanna change virtual address to physical address
+ * in "straight map area"
+ */	
 startup_32:
 	/* Set temporary segments */
 	cld
-	lgdt boot_gdt_descr
+	lgdt boot_gdt_descr - __PAGE_OFFSET
 	movl $(__BOOT_DS),%eax
 	movl %eax,%ds
 	movl %eax,%es
 	movl %eax,%fs
 	movl %eax,%gs
-	movl %eax,%ss
 
 	/* Clear BSS */
 	xorl %eax, %eax
-	movl $_bss_start,%edi
-	movl $_bss_end,%ecx
+	movl $_bss_start - __PAGE_OFFSET,%edi
+	movl $_bss_end - __PAGE_OFFSET,%ecx
 	subl %edi,%ecx
 	shrl $2,%ecx
 	rep ; stosl
+
+	/* Set global directory for (8-MB) temporary memory
+	 * EAX = page frame number
+	 */
+page_pde_offset = (__PAGE_OFFSET >> 22);
+
+	movl $(pg0 - __PAGE_OFFSET), %edi
+	movl $(swapper_pg_dir - __PAGE_OFFSET), %edx
+	movl $0x007, %eax			/* 0x007 = PRESENT+RW+USER */
+10:
+	leal 0x007(%edi),%ecx			/* Create PDE entry */
+	movl %ecx,(%edx)			/* Store identity PDE entry */
+	movl %ecx,page_pde_offset(%edx)		/* Store kernel PDE entry */
+	addl $4,%edx
+	movl $1024, %ecx
+11:
+	stosl
+	addl $0x1000,%eax
+	loop 11b
+	//movl %edi,(init_pg_tables_end - __PAGE_OFFSET)
+
+10:
+	leal 0x007(%edi),%ecx			/* Create PDE entry */
+	movl %ecx,(%edx)			/* Store identity PDE entry */
+	movl %ecx,page_pde_offset(%edx)		/* Store kernel PDE entry */
+	addl $4,%edx
+	movl $1024, %ecx
+11:
+	stosl
+	addl $0x1000,%eax
+	loop 11b
 	
-	/* Enable virtual paging */
-	/*movl $swapper_pg_dir,%eax
-	movl %eax,%cr3 
-	movl %cr0,%eax
-	orl $0x80000000,%eax
-	movl %eax,%cr0 */
-	ljmp $__BOOT_CS,$1f
-
-1:
-
-	//lss stack_start,%esp//[*] Bug
-	/* init eflags */
+/*
+ * Enable paging
+ */
+	movl $swapper_pg_dir-__PAGE_OFFSET,%eax
+	movl %eax,%cr3
+/*	movl %cr0,%eax
+	orl $0x80000000,%eax 
+	movl %eax,%cr0*/
+	
 	pushl $0
 	popfl
-	
-	/* Set up idt */
-	call setup_idt
 
-	/* Jump to kernel */
 	call kernel_main
-
 /* sets up a idt with 256 entries pointing to
  * ignore_int(default interupt handler)
  */
@@ -74,13 +102,17 @@ per_idt:
 	addl $8,%edi
 	dec %ecx
 	jne per_idt
-	ret
-	
+	ret	
 /* default interrupt handler */	
 ignore_int:
 	cld
 	iret
 	
+/*
+ * Initialize eflags.  Some BIOS's leave bits like NT set.  This would
+ * confuse the debugger if this code is traced.
+ * XXX - best to initialize before switching to protected mode.
+ */
 	
 .section .bss
 .global swapper_pg_dir
@@ -94,9 +126,10 @@ idt_table:	.fill 256,8,0		/* idt is uninitialized */
 stack_start:
 	.long __BOOT_DS
 
+	.word 0
 boot_gdt_descr:
 	.word __BOOT_DS + 7
-	.long boot_gdt_table
+	.long boot_gdt_table - __PAGE_OFFSET
 	.word 0
 
 idt_descr:

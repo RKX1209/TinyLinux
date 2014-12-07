@@ -9,8 +9,6 @@
 #include <asm/page.h>
 #include <asm/system.h>
 
-#define PTRS_PER_PGD 1024 //entries per one pgd
-#define PTRS_PER_PTE 1024 //entries per one pte
 
 struct mm_struct{
   pgd_t* pgd;
@@ -18,6 +16,9 @@ struct mm_struct{
 struct mm_struct init_mm;
 
 extern pgd_t swapper_pg_dir[1024];
+
+#define PTRS_PER_PGD 1024 //entries per one pgd
+#define PTRS_PER_PTE 1024 //entries per one pte
 
 /* <Page directory table> */
 #define PGDIR_SHIFT 22
@@ -74,6 +75,10 @@ extern pgd_t swapper_pg_dir[1024];
 
 /* Change physical address to virtual address (Straight map area) */
 #define pa_to_va(addr) ((void *)((unsigned long)(addr) + PAGE_OFFSET))
+
+
+#define PFN_UP(x) (((x) + PAGE_SIZE-1) >> PAGE_SHIFT)
+#define PFN_DOWN(x) ((x) >> PAGE_SHIFT)
 
 /* set_pte: Gurantee the order of memory access
  * not to have late access to PTE.

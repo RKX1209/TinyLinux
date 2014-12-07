@@ -1,6 +1,6 @@
 SECTIONS
 {
-    . = 0x280000;
+    . = 0xC0100000;
     .text :
     {
         _text_start = .;
@@ -28,4 +28,5 @@ SECTIONS
         *(.bss)
         _bss_end = .;
     }
+    pg0 = .; /* pg0 is temporary page table */
 }    

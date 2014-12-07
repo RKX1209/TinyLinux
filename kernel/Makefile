@@ -1,5 +1,5 @@
-OBJS		= $(ARCH_KERNEL)/head.o main.o gasfunc.o $(ARCH_KERNEL)/setup.o \
-		  $(ARCH_MM)/init.o $(MM)/bootmem.o
+ OBJS		= $(ARCH_KERNEL)/head.o main.o gasfunc.o $(ARCH_KERNEL)/setup.o\
+		  $(ARCH_MM)/init.o $(MM)/bootmem.o $(ARCH_LIB)/memcpy.o
 
 HOME_DIR	= ..
 USER_NAME	= rkx
@@ -27,6 +27,7 @@ ARCH		= ../arch
 ARCH_BOOT	= $(ARCH)/boot
 ARCH_KERNEL	= $(ARCH)/kernel
 ARCH_MM		= $(ARCH)/mm
+ARCH_LIB	= $(ARCH)/lib
 #-------------------------
 
 #---MM path-------------
