@@ -6,6 +6,7 @@
 #include <abyon/mmzone.h>
 
 #include <asm/bitops.h>
+#include <asm/string.h>
 
 unsigned long max_low_pfn;
 unsigned long min_low_pfn;
@@ -19,11 +20,11 @@ static unsigned long init_bootmem_core (pg_data_t *pgdat,unsigned long mapstart,
   pgdat_list = pgdat;
   
   mapsize = (mapsize + (sizeof(long) - 1UL)) & ~(sizeof(long) - 1UL);
-  bdata->node_bootmem_map = mapstart << PAGE_SHIFT; /* Set free area table */
+  bdata->node_bootmem_map = (void *)(mapstart << PAGE_SHIFT); /* Set free area table */
   
   bdata->node_boot_start = (start << PAGE_SHIFT);
   bdata->node_end_pfn = end;
-  memset(bdata->node_bootmem_map,0xff,mapsize);
+  __memset(bdata->node_bootmem_map,0xff,mapsize);
   return mapsize;
   
 }
@@ -39,7 +40,7 @@ static void reserve_bootmem_core(bootmem_data_t *bdata, unsigned long addr,
   }
 }
 
-static void *  __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long size,
+void *  __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long size,
 				    unsigned long align, unsigned long goal){
   unsigned long start = 0;
   unsigned long eidx = bdata->node_end_pfn - (bdata->node_boot_start >> PAGE_SHIFT);
@@ -88,8 +89,8 @@ static void *  __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long si
   bdata->last_offset &= ~PAGE_MASK;
   for(i = start; i < start + areasize; i++)
     test_and_set_bit(i,bdata->node_bootmem_map);
-  memset(start,0,size);
-  return start;
+  __memset(start,0,size);
+  return (void*)start;
 }
 static void free_bootmem_core(bootmem_data_t *bdata,
 			      unsigned long addr, unsigned long size){

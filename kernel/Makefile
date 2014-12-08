@@ -1,12 +1,17 @@
- OBJS		= $(ARCH_KERNEL)/head.o main.o gasfunc.o $(ARCH_KERNEL)/setup.o\
-		  $(ARCH_MM)/init.o $(MM)/bootmem.o $(ARCH_LIB)/memcpy.o
+ OBJS		= $(ARCH_KERNEL)/head.o $(KERNEL)/main.o $(KERNEL)/gasfunc\
+		  $(KERNEL)/printk.o \
+		  $(ARCH_KERNEL)/setup.o \
+		  $(ARCH_MM)/init.o \
+		  $(ARCH_LIB)/memcpy.o \
+		  $(MM)/bootmem.o \
+		  $(LIB)/vsprintf.o \
 
 HOME_DIR	= ..
 USER_NAME	= rkx
 
 #---Build Command---
 CC		= gcc
-CFLAGS		= -fomit-frame-pointer -I$(HOME_DIR)/include -Wall
+CFLAGS		= -fomit-frame-pointer -I$(HOME_DIR)/include -Wall -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
 LFLAGS		= -m elf_i386 --oformat binary -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 LFLAGS2		= -m elf_i386 -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 ASFLAGS		= -c -m32 -I$(HOME_DIR)/include
@@ -22,6 +27,10 @@ CD		= cd
 CAT		= cat
 SUDO		= sudo
 
+#---Kernel path-------------
+KERNEL		= .
+#-------------------------
+
 #---Arch path-------------
 ARCH		= ../arch
 ARCH_BOOT	= $(ARCH)/boot
@@ -32,6 +41,10 @@ ARCH_LIB	= $(ARCH)/lib
 
 #---MM path-------------
 MM		= ../mm
+#-------------------------
+
+#---Lib path-------------
+LIB		= ../lib
 #-------------------------
 
 
@@ -76,6 +89,12 @@ $(MM)/%.o : $(MM)/%.c Makefile
 
 $(MM)/%.o : $(MM)/%.S Makefile
 	$(CC) -o $(MM)/$*.o $(MM)/$*.S $(ASFLAGS)
+
+$(LIB)/%.o : $(LIB)/%.c Makefile
+	$(CC) -m32 -c -o $(LIB)/$*.o $(LIB)/$*.c $(CFLAGS)
+
+$(LIB)/%.o : $(LIB)/%.S Makefile
+	$(CC) -o $(LIB)/$*.o $(LIB)/$*.S $(ASFLAGS)
 
 
 

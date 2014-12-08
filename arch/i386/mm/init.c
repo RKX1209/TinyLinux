@@ -17,8 +17,8 @@ static inline int is_kernel_text(unsigned long addr){
 
 static pte_t *one_page_table_init(pgd_t *pgd){
   if(pgd_none(pgd)){
-    //pte_t *page_table = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
-    pte_t *page_table;
+    pte_t *page_table = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
+    //pte_t *page_table;
     unsigned long ph_addr = (unsigned long)page_table - PAGE_OFFSET;//Straight map area      
     pgd = &((pgd_t){ph_addr | _PAGE_TABLE});
     return page_table;

@@ -28,6 +28,20 @@ typedef struct bootmem_data{
 extern unsigned long init_bootmem (unsigned long addr, unsigned long memend);
 extern unsigned long init_bootmem_node (pg_data_t *pgdat, unsigned long freepfn,
 					unsigned long startpfn, unsigned long endpfn);
+extern void *  __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long size,
+				    unsigned long align, unsigned long goal);
 extern void free_bootmem (unsigned long addr, unsigned long size);
 extern void reserve_bootmem (unsigned long addr, unsigned long size);
+
+#define alloc_bootmem_low_pages(x) \
+  __alloc_bootmem((x), PAGE_SIZE, 0)
+
+static inline void *__alloc_bootmem (unsigned long size, unsigned long align, unsigned long goal)
+{
+  pg_data_t *pgdat = pgdat_list;
+  return __alloc_bootmem_core(pgdat->bdata,size, align, goal);
+}
+
+
+
 #endif

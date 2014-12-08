@@ -29,6 +29,25 @@ static inline void * __memset_generic(void * s, char c,int count){
   return s;
 }
 
+static inline unsigned long strnlen(const char *s, unsigned long count){
+  int __res;
+  int d0;
+  __asm__ __volatile__(
+	"movl %2,%0\n\t"
+	"jmp 2f\n"
+	"1:\tcmpb $0,(%0)\n\t"
+	"je 3f\n\t"
+	"incl %0\n"
+	"2:\tdecl %1\n\t"
+	"cmpl $-1,%1\n\t"
+	"jne 1b\n"
+	"3:\tsubl %2,%0"
+	:"=a" (__res), "=&d" (d0)
+	:"c" (s), "1" (count)
+	:"memory");
+  return __res;
+}
+
 #define __memset(s,c,count) \
   (__memset_generic((s),(c),(count)))
 
