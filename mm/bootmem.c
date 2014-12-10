@@ -4,6 +4,7 @@
  */
 #include <abyon/bootmem.h>
 #include <abyon/mmzone.h>
+#include <abyon/kernel.h>
 
 #include <asm/bitops.h>
 #include <asm/string.h>
@@ -95,15 +96,19 @@ void *  __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long size,
 static void free_bootmem_core(bootmem_data_t *bdata,
 			      unsigned long addr, unsigned long size){
   /* bdata management range (index) */
-  unsigned long sidx;
+
+  unsigned long start = (addr + PAGE_SIZE - 1) / PAGE_SIZE;
+  unsigned long end = (addr + size) / PAGE_SIZE;
+
+
+  unsigned long sidx = start - (bdata->node_boot_start / PAGE_SIZE);
   unsigned long eidx = (addr + size - bdata->node_boot_start) / PAGE_SIZE;
 
-  unsigned long end = (addr + size) / PAGE_SIZE;
-  unsigned long start = (addr + PAGE_SIZE - 1) / PAGE_SIZE;
   if(addr < bdata->last_success) bdata->last_success = addr;
-  sidx = start - (bdata->node_boot_start / PAGE_SIZE);
+  
   unsigned long i;
   for(i = sidx; i < eidx; i++){
+    printk("Free");
     test_and_clear_bit(i,bdata->node_bootmem_map);
   }
 }

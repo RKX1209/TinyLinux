@@ -1,4 +1,4 @@
-IMGS		= $(BOOT)/loader.img $(KERNEL)/kernel.img
+IMGS		= $(BOOT)/loader.img $(KERNEL)/kernel.img $(DRIVERS)/vram/fonts.bin
 HOME_DIR	= $(CURDIR)
 USER_NAME	= rkx
 
@@ -23,10 +23,11 @@ WHOAMI		= whoami
 GRUB_INSTALL	= grub-install
 
 #---Module path-------
+COMPILE_PATH	= /tmp/Abyon
 BOOT		= boot
 KERNEL		= kernel
 ARCH		= arch
-COMPILE_PATH	= /tmp/Abyon
+DRIVERS		= drivers
 #---------------------
 
 #---Virtual Loop Device---
@@ -55,7 +56,7 @@ install :
 	($(CD) $(COMPILE_PATH);$(MAKE) img)
 	$(MV) $(COMPILE_PATH)/Abyon.img $(HOME_DIR)/Abyon.img
 
-	$(RM) -r $(COMPILE_PATH)
+	#$(RM) -r $(COMPILE_PATH)
 init :
 	$(DD) if=/dev/zero of=$(LPDEV_IMG) bs=1k count=1440
 	$(SUDO) $(SET_LPDEV) $(LPDEV) $(LPDEV_IMG)

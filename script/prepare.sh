@@ -19,6 +19,7 @@ cp -r ./include /tmp/Abyon
 cp -r ./kernel /tmp/Abyon
 cp -r ./mm /tmp/Abyon
 cp -r ./lib /tmp/Abyon
+cp -r ./drivers /tmp/Abyon
 cp -r ./ldscript /tmp/Abyon
 cp Makefile /tmp/Abyon
 cp -r /tmp/Abyon/arch/i386/* /tmp/Abyon/arch/

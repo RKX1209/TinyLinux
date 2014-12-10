@@ -2,16 +2,18 @@
 		  $(KERNEL)/printk.o \
 		  $(ARCH_KERNEL)/setup.o \
 		  $(ARCH_MM)/init.o \
-		  $(ARCH_LIB)/memcpy.o \
-		  $(MM)/bootmem.o \
+		  $(ARCH_LIB)/memcpy.o $(ARCH_LIB)/bitops.o \
+		  $(MM)/bootmem.o $(MM)/page_alloc.o \
 		  $(LIB)/vsprintf.o \
+		  $(DRIVERS_VRAM)/disp.o \
+		  $(ARCH_KERNEL)/tail.o
 
 HOME_DIR	= ..
 USER_NAME	= rkx
 
 #---Build Command---
 CC		= gcc
-CFLAGS		= -fomit-frame-pointer -I$(HOME_DIR)/include -Wall -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
+CFLAGS		= -I$(HOME_DIR)/include -Wall -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
 LFLAGS		= -m elf_i386 --oformat binary -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 LFLAGS2		= -m elf_i386 -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 ASFLAGS		= -c -m32 -I$(HOME_DIR)/include
@@ -41,6 +43,11 @@ ARCH_LIB	= $(ARCH)/lib
 
 #---MM path-------------
 MM		= ../mm
+#-------------------------
+
+#---Lib path-------------
+DRIVERS		= ../drivers
+DRIVERS_VRAM	= $(DRIVERS)/vram
 #-------------------------
 
 #---Lib path-------------

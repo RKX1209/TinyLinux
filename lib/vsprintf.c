@@ -16,7 +16,7 @@
 #define LARGE	64		/* use 'ABCDEF' instead of 'abcdef' */
 
 /* num => buf */
-static char* number(char * buf, char * end, unsigned long long num, int base, int size){
+static char* number(char * buf, char * end, unsigned long num, int base, int size){
   static const char small_digits[] = "0123456789abcdefghijklmnopqrstuvwxyz";
   const char *digits = small_digits;
   char tmp[66];
@@ -25,9 +25,9 @@ static char* number(char * buf, char * end, unsigned long long num, int base, in
     tmp[i++] = '0';
   }
   else{
-    while(num != 0){
+    while(num > 0){
       tmp[i++] = digits[num % base];
-      num = num + base;
+      num /= base;
     }
   }
   while(i-- > 0){

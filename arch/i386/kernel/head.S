@@ -26,61 +26,63 @@
 startup_32:
 	/* Set temporary segments */
 	cld
-	lgdt boot_gdt_descr - __PAGE_OFFSET
+	lgdt boot_gdt_descr 
+	movl $(stack_end ),%esp
+	movl $(stack_end ),%ebp		
 	movl $(__BOOT_DS),%eax
 	movl %eax,%ds
 	movl %eax,%es
 	movl %eax,%fs
 	movl %eax,%gs
+	movl %eax,%ss	
 
 	/* Clear BSS */
-	xorl %eax, %eax
-	movl $_bss_start - __PAGE_OFFSET,%edi
-	movl $_bss_end - __PAGE_OFFSET,%ecx
+/*	xorl %eax, %eax
+	movl $_bss_start ,%edi
+	movl $_bss_end ,%ecx
 	subl %edi,%ecx
 	shrl $2,%ecx
-	rep ; stosl
+	rep ; stosl */
 
 	/* Set global directory for (8-MB) temporary memory
 	 * EAX = page frame number
 	 */
-page_pde_offset = (__PAGE_OFFSET >> 22);
+/*page_pde_offset = (__PAGE_OFFSET >> 22);
 
-	movl $(pg0 - __PAGE_OFFSET), %edi
-	movl $(swapper_pg_dir - __PAGE_OFFSET), %edx
-	movl $0x007, %eax			/* 0x007 = PRESENT+RW+USER */
+	movl $(pg0 ), %edi
+	movl $(swapper_pg_dir ), %edx
+	movl $0x007, %eax
 10:
-	leal 0x007(%edi),%ecx			/* Create PDE entry */
-	movl %ecx,(%edx)			/* Store identity PDE entry */
-	movl %ecx,page_pde_offset(%edx)		/* Store kernel PDE entry */
+	leal 0x007(%edi),%ecx
+	movl %ecx,(%edx)
+	movl %ecx,page_pde_offset(%edx)
 	addl $4,%edx
 	movl $1024, %ecx
 11:
 	stosl
 	addl $0x1000,%eax
 	loop 11b
-	//movl %edi,(init_pg_tables_end - __PAGE_OFFSET)
+	//movl %edi,(init_pg_tables_end )
 
 10:
-	leal 0x007(%edi),%ecx			/* Create PDE entry */
-	movl %ecx,(%edx)			/* Store identity PDE entry */
-	movl %ecx,page_pde_offset(%edx)		/* Store kernel PDE entry */
+	leal 0x007(%edi),%ecx
+	movl %ecx,(%edx)
+	movl %ecx,page_pde_offset(%edx)
 	addl $4,%edx
 	movl $1024, %ecx
 11:
 	stosl
 	addl $0x1000,%eax
 	loop 11b
-	
+*/
 /*
  * Enable paging
  */
-	movl $swapper_pg_dir-__PAGE_OFFSET,%eax
+	movl $swapper_pg_dir,%eax
 	movl %eax,%cr3
 /*	movl %cr0,%eax
 	orl $0x80000000,%eax 
 	movl %eax,%cr0*/
-	
 	pushl $0
 	popfl
 
@@ -119,17 +121,18 @@ ignore_int:
 swapper_pg_dir:
 	.fill 1024,4,0
 empty_zero_page:
-	.fill 4096,1,0
+	.fill 4096,1,0	
 idt_table:	.fill 256,8,0		/* idt is uninitialized */
 	
 .data
-stack_start:
-	.long __BOOT_DS
-
+stack_begin:
+	.fill 4096,1,0
 	.word 0
+stack_end:	
+	
 boot_gdt_descr:
 	.word __BOOT_DS + 7
-	.long boot_gdt_table - __PAGE_OFFSET
+	.long boot_gdt_table 
 	.word 0
 
 idt_descr:

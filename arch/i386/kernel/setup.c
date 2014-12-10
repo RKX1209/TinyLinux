@@ -34,26 +34,33 @@ static void register_bootmem_low_pages(unsigned long max_low_pfn){
 
 /* Setup bootmem allocator */
 void setup_bootmem_allocator(void){
-  unsigned long bootmap_size = init_bootmem(min_low_pfn,max_low_pfn);
+  unsigned long bootmap_size = init_bootmem(min_low_pfn,max_low_pfn - min_low_pfn + 1);
+  /* free all 'enable' pages */
   register_bootmem_low_pages(max_low_pfn);
+  /* reserve memory map itself */
+/*   reserve_bootmem(min_low_pfn << PAGE_SHIFT, */
+/* 		  ((min_low_pfn << PAGE_SHIFT) + bootmap_size + PAGE_SIZE - 1) - (min_low_pfn << PAGE_SHIFT)); */
+/*   reserve_bootmem(0,PAGE_SIZE); */
 
-reserve_bootmem(__PHYSICAL_START,((min_low_pfn << PAGE_SIZE) + bootmap_size + PAGE_SIZE - 1) - (__PHYSICAL_START));
-reserve_bootmem(0,PAGE_SIZE);
-
-/* reserve BIOS EBDA region */
-reserve_bootmem(0x40E,PAGE_SIZE);
+/* /\* reserve BIOS EBDA region *\/ */
+/*   reserve_bootmem(0x40E,PAGE_SIZE); */
 }
 
 static unsigned long setup_memory(void){
+  init_e820();
+  min_low_pfn = (e820.map[0].addr + 0x500) >> PAGE_SHIFT;
+  max_low_pfn = (e820.map[5].addr +  e820.map[5].size - 1) >> PAGE_SHIFT;
+  printk("init_e820");
   setup_bootmem_allocator();
   return max_low_pfn;
 }
 /* setup arch part */
 void setup_arch(){
-
+  printk("setup_arch");
   /* Setup memory informations */
   unsigned long max_low_pfn = setup_memory();
-  
+
+
   /* Setup page tables */  
-  paging_init();
+  //paging_init();
 }
