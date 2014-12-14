@@ -30,6 +30,7 @@ startup_32:
 	movl $(stack_end ),%esp
 	movl $(stack_end ),%ebp		
 	movl $(__BOOT_DS),%eax
+	
 	movl %eax,%ds
 	movl %eax,%es
 	movl %eax,%fs
@@ -78,11 +79,13 @@ startup_32:
 /*
  * Enable paging
  */
-	movl $swapper_pg_dir,%eax
+/*	movl $swapper_pg_dir,%eax
 	movl %eax,%cr3
-/*	movl %cr0,%eax
+	movl %cr0,%eax
 	orl $0x80000000,%eax 
 	movl %eax,%cr0*/
+	ljmp $__BOOT_CS,$1f	/* Clear prefetch and normalize %eip */
+1:
 	pushl $0
 	popfl
 
@@ -116,23 +119,20 @@ ignore_int:
  * XXX - best to initialize before switching to protected mode.
  */
 	
-.section .bss
-.global swapper_pg_dir
-swapper_pg_dir:
-	.fill 1024,4,0
-empty_zero_page:
-	.fill 4096,1,0	
-idt_table:	.fill 256,8,0		/* idt is uninitialized */
-	
 .data
+
 stack_begin:
 	.fill 4096,1,0
 	.word 0
 stack_end:	
+	.fill 256,1,0
+
+
+idt_table:	.fill 256,8,0
 	
 boot_gdt_descr:
-	.word __BOOT_DS + 7
-	.long boot_gdt_table 
+	.word __BOOT_DS+7
+	.long boot_gdt_table
 	.word 0
 
 idt_descr:
@@ -191,4 +191,10 @@ cpu_gdt_table:
 	.quad 0x0000000000000000	/* 0xe8 - unused */
 	.quad 0x0000000000000000	/* 0xf0 - unused */
 	.quad 0x0000000000000000	/* 0xf8 - GDT entry 31: double-fault TSS */
-	
+.bss
+.global swapper_pg_dir
+swapper_pg_dir:
+	.fill 1024,4,0
+empty_zero_page:
+	.fill 4096,1,0	
+	.fill 4096,1,0	

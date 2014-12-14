@@ -23,4 +23,4 @@
 extern char* font0;
 //char *font_dat = font0; /* font0 in ldscript */
 void putfont(char *vram, int xsize, int x, int y, char col, char *font);
-void putfonts_str(char *vram, int xsize, int x, int y, char col, unsigned char *s);
+void putfonts_str(char *vram, int xsize, int x, int y, char col, unsigned char *s, unsigned char *end, unsigned char *k);

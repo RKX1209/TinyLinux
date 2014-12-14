@@ -23,5 +23,6 @@
 #define COL8_848484		15
 
 extern unsigned char* kernel_end;
+void flush_screen();
 void putfont(char *vram, int xsize, int x, int y, char col, unsigned char *font);
-void putfonts_str(char *vram, int xsize, int x, int y, char col, unsigned char *s,unsigned char *k);
+void putfonts_str(char *vram, int xsize, int x, int y, char col, unsigned char *s, unsigned char *k);

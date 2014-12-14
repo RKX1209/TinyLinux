@@ -25,6 +25,7 @@ typedef struct bootmem_data{
   unsigned long last_success;
 } bootmem_data_t;
 
+bootmem_data_t bdata;
 extern unsigned long init_bootmem (unsigned long addr, unsigned long memend);
 extern unsigned long init_bootmem_node (pg_data_t *pgdat, unsigned long freepfn,
 					unsigned long startpfn, unsigned long endpfn);

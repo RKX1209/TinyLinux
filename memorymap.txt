@@ -1,5 +1,6 @@
 <16-bit:real mode>
 0x7c00 - 0x7e00 Boot Loader(loaderS1)
+0x7000 - 0x???? Boot alloc bit map
 0x8000 - 0x8200 Boot Loader[2](loaderS1) <= Copy
 0x8200 - 0xA0000 Kernel Image(temporary)
 <32-bit:protected mode>

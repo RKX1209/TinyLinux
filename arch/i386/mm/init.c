@@ -9,30 +9,40 @@
 #include <asm/pgtable.h>
 #include <asm/fixmap.h>
 #include <asm/highmem.h>
+#include <asm/tlbflush.h>
 
+extern int printk(const char *fmt, ...);
+
+unsigned long pgdtable[2048];
+unsigned long ptetable[2048][2048];
 static inline int is_kernel_text(unsigned long addr){
   //if(PAGE_OFFSET <= addr && addr <= (unsigned long)_text_end)
   return 1;
 }
-
+static unsigned long i;
 static pte_t *one_page_table_init(pgd_t *pgd){
-  if(pgd_none(pgd)){
+  if(pgd_none(*pgd)){
+
     pte_t *page_table = (pte_t *) alloc_bootmem_low_pages(PAGE_SIZE);
-    //pte_t *page_table;
-    unsigned long ph_addr = (unsigned long)page_table - PAGE_OFFSET;//Straight map area      
-    pgd = &((pgd_t){ph_addr | _PAGE_TABLE});
+    unsigned long ph_addr = (unsigned long)page_table;//Straight map area
+    //printk("alloc pgd[%d] (0x%x)",i++,ph_addr);
+    pgd->pgd = (ph_addr | _PAGE_TABLE);
     return page_table;
   }
-  return pte_virtual_addr(pgd,0);
+  //printk("pte exist0x%x",(pte_t*)(pgd->pgd));
+  return pgd_pa_addr(*pgd,0);
+  //return pgd->pgd;
 }
 
 static void page_table_range_init(unsigned long start,unsigned long end,pgd_t *pgd_base){
   unsigned long vaddr = start;
   int pgd_idx = pgd_index(vaddr);
   pgd_t *pgd = pgd_base + pgd_idx;
-  for(; (pgd_idx < PTRS_PER_PGD) && (vaddr != end); pgd++,pgd_idx++){
-    if(pgd_none(*pgd))
+  for(; (pgd_idx < PTRS_PER_PGD) && (vaddr < end); pgd++,pgd_idx++){
+    if(pgd_none(*pgd)){
+      printk("none");
       one_page_table_init(pgd);
+    }
     vaddr += PGDIR_SIZE;
   }
 }
@@ -57,46 +67,67 @@ static void permanent_kmaps_init(pgd_t *pgd_base){
   pte_t *pkmap_page_table = pte;	
 }
 
-static void kernel_physical_mapping_init(pgd_t *pgd_base) {
+static void kernel_physical_mapping_init(pgd_t *pgd_base){
   pgd_t *pgd;
-  pte_t *pte;
-
+  pte_t *pte;  
   int pgd_idx,pte_idx;
-  pgd_idx = pgd_index(PAGE_OFFSET);
-  pgd = pgd_base + pgd_idx;
-  unsigned long pfn; //page frame number(simply 4k-page number)
-  pfn = 0;
-  for(; pgd_idx < PTRS_PER_PGD; pgd++,pgd_idx++){
-    if(pfn >= max_low_pfn) continue;
-    unsigned long address = pfn * PAGE_SIZE + PAGE_OFFSET;
-    pte = one_page_table_init(pgd);
-    for(pte_idx = 0; pte_idx < PTRS_PER_PTE && pfn < max_low_pfn; pte++,pfn++,pte_idx++){
-      if(is_kernel_text(address))
-	set_pte(pte,pfn_pte(pfn,PAGE_KERNEL_EXEC));
-      else
-	set_pte(pte,pfn_pte(pfn,PAGE_KERNEL));
+
+  pgd = pgd_base;
+  printk("Setting memory tables...");
+  printk("pgd_base(after):0x%x",pgd_base);
+
+  unsigned long address;
+  unsigned long pfn = 0;
+  for(pfn = 0; pfn < max_low_pfn; pfn++){
+    address = pfn * PAGE_SIZE;
+    pgd_idx = pgd_index(address);
+    pte_idx = pte_index(address);
+    
+    pte = one_page_table_init(&pgd[pgd_idx]);
+    pte_t* pte_entry = &(pte[pte_idx]);
+    
+    if(is_kernel_text(address))
+      set_pte(pte_entry,pfn_pte(pfn,PAGE_KERNEL_EXEC));
+    else
+      set_pte(pte_entry,pfn_pte(pfn,PAGE_KERNEL_EXEC));
+    
+    if(pfn < 2){
+      printk("virt:0x%x->pgd[%d](0x%x)=(0x%x)",address,pgd_idx,&pgd[pgd_idx],pgd[pgd_idx].pgd);
+      printk("=>pte(0x%x) pte[%d](0x%x) ph[0x%x]",pte,pte_idx,pte_entry,pte_entry->pte_low);
     }
+    
   }
+  printk("Setting memory tables... [OK]");
 }
 
 
 static void pagetable_init(void){
   /* Set page tables of "straight map area" */
-  pgd_t *pgd_base = swapper_pg_dir;
+  //pgd_t *pgd_base = (pgd_t*)(swapper_pg_dir);
+  pgd_t *pgd_base = (pgd_t*)swapper_pg_dir;
   kernel_physical_mapping_init(pgd_base);  
 
+  
   /* Set page tables of "fix map area" */
   unsigned long fixed_vaddr = __fix_to_virt(__end_of_fixed_addresses - 1) & PGDIR_MASK;
   page_table_range_init(fixed_vaddr,0,pgd_base);
 
-  /* Set page tables of "HIGHMEM area" */  
-  permanent_kmaps_init(pgd_base);
+  /* Set page tables of "HIGHMEM area" */
+  //permanent_kmaps_init(pgd_base);
   return;
 }
 
 void paging_init(void){
   pagetable_init();
-  write_cr0(swapper_pg_dir);
-  //__flush_tlb_all();
-  kmap_init();  
+  pgd_t* pgd_base = (pgd_t*)swapper_pg_dir;
+  unsigned long pfn;
+  
+  write_cr3(pgd_base);
+  unsigned long cr3i = read_cr3();
+  unsigned long cr4i = read_cr4();
+  unsigned long cr0i = read_cr0();
+  cr0i |= 0x80000000;
+  write_cr0(cr0i);  
+  __flush_tlb_all();
+  //kmap_init();  
 }

@@ -26,17 +26,27 @@ void putfont(char *vram, int xsize, int x, int y, char col, unsigned char *font)
 /*   0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24, */
 /*   0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x00, 0x00 */
 /* }; */
+void flush_screen(){
+  char *p;
+  unsigned long i;
+  for(i = 0xa0000; i <= 0xaffff; i++){
+    p = (char *)i;
+    *p = COL8_000000;
+  }
+}
+
 void putfonts_str(char *vram, int xsize, int x, int y, char col, unsigned char *s, unsigned char *k){
-  //unsigned char *s2 = (unsigned char*)(s - __PAGE_OFFSET);
-  unsigned char *s2 = s;
-  //unsigned char *fA = (unsigned char*)(font_A - __PAGE_OFFSET);
-  int sx = x;
   int i = 0;
-  //unsigned char* font0 = (unsigned char*)(k - __PAGE_OFFSET);
   unsigned char* font0 = k;
-  for (i = 0; *s2 != 0x00; s2++,i++) {
-    putfont(vram, xsize, x, y, col, (unsigned char*)(font0 + *s2 * 16));
-    x += 8;
+  
+  for (i = 0; *s; s++,i++) {
+    if(*s == '\n'){
+      y += 16;
+      x = 0;
+    }else{
+      putfont(vram, xsize, x, y, col, (unsigned char*)(font0 + *s * 16));
+      x += 8;
+    }
   }
   return;
 }

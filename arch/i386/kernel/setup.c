@@ -4,13 +4,17 @@
  */
 
 #include <abyon/bootmem.h>
+#include <abyon/mmzone.h>
+#include <drivers/disp.h>
+
 #include <asm/e820.h>
 #include <asm/pgtable.h>
 
+extern int printk(const char *fmt, ...);
+extern unsigned long _fin_end;
 void paging_init(void);
 unsigned long init_pg_tables_end = ~0UL;
   
-
 /* Enable bootmem low pages */
 static void register_bootmem_low_pages(unsigned long max_low_pfn){
   int i;
@@ -28,39 +32,50 @@ static void register_bootmem_low_pages(unsigned long max_low_pfn){
       continue;
 
     unsigned long size = last_pfn - cur_pfn;
+    printk("Clearing... e820[%d](%d,%d)",i,cur_pfn,last_pfn);
     free_bootmem(cur_pfn << PAGE_SHIFT,size << PAGE_SHIFT);
   }
 }
 
 /* Setup bootmem allocator */
 void setup_bootmem_allocator(void){
-  unsigned long bootmap_size = init_bootmem(min_low_pfn,max_low_pfn - min_low_pfn + 1);
+  unsigned long bootmap_size = init_bootmem(min_low_pfn,max_low_pfn);
   /* free all 'enable' pages */
   register_bootmem_low_pages(max_low_pfn);
+  printk("Free bootmem pages");
   /* reserve memory map itself */
-/*   reserve_bootmem(min_low_pfn << PAGE_SHIFT, */
-/* 		  ((min_low_pfn << PAGE_SHIFT) + bootmap_size + PAGE_SIZE - 1) - (min_low_pfn << PAGE_SHIFT)); */
-/*   reserve_bootmem(0,PAGE_SIZE); */
+  reserve_bootmem(min_low_pfn << PAGE_SHIFT,
+  		  ((min_low_pfn << PAGE_SHIFT) + bootmap_size + PAGE_SIZE - 1) - (min_low_pfn << PAGE_SHIFT));
 
-/* /\* reserve BIOS EBDA region *\/ */
-/*   reserve_bootmem(0x40E,PAGE_SIZE); */
+  //printk("reserve bit table[%d,]",min_low_pfn);
+  reserve_bootmem(__PAGE_OFFSET,
+  		  ((unsigned long)&(_fin_end) - __PAGE_OFFSET));
+  //printk("reserve kernel[%d,%d]",__PAGE_OFFSET >> PAGE_SHIFT,(unsigned long)(&_fin_end) >> PAGE_SHIFT);
+  reserve_bootmem(0,PAGE_SIZE);
+  //printk("reserve BIOS[%d,%d]",0,PAGE_SIZE >> PAGE_SHIFT);
+
+/* reserve BIOS EBDA region */
+  reserve_bootmem(0x40E,PAGE_SIZE);
+  //printk("reserve EBDA[%d,%d]",0x40e >> PAGE_SHIFT,(0x40e + PAGE_SIZE) >> PAGE_SHIFT);
 }
 
 static unsigned long setup_memory(void){
   init_e820();
-  min_low_pfn = (e820.map[0].addr + 0x500) >> PAGE_SHIFT;
-  max_low_pfn = (e820.map[5].addr +  e820.map[5].size - 1) >> PAGE_SHIFT;
-  printk("init_e820");
+  //printk("init_e820");
+  
+  min_low_pfn = (e820.map[0].addr + 0x7e00) >> PAGE_SHIFT;
+  max_low_pfn = (e820.map[6].addr +  e820.map[6].size - 1) >> PAGE_SHIFT;
+  
   setup_bootmem_allocator();
   return max_low_pfn;
 }
 /* setup arch part */
 void setup_arch(){
-  printk("setup_arch");
+  printk("setup arch");
   /* Setup memory informations */
-  unsigned long max_low_pfn = setup_memory();
-
+  setup_memory();
 
   /* Setup page tables */  
-  //paging_init();
+  paging_init();
+  printk("setup arch ....[OK]");
 }

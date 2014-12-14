@@ -22,11 +22,18 @@ SECTIONS
         *(.data)
         _data_end = .;
     }
-
+    . += 0x3000; /* font data area */
+    . = ALIGN(4096);
     .bss :
     {
         _bss_start = .;
         *(.bss)
         _bss_end = .;
+    }
+    .fin :
+    {
+        _fin_start = .;
+        *(.fin)
+        _fin_end = .;
     }
 }

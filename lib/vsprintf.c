@@ -46,6 +46,7 @@ int vsnprintf(char *buf, unsigned long size, const char *fmt, va_list args){
   unsigned int num;
   
   for(; *fmt; fmt++){
+    base = 10;
     /* Plain text */
     if(*fmt != '%'){
       if(str <= end) *str = *fmt;

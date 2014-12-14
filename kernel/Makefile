@@ -15,7 +15,7 @@ USER_NAME	= rkx
 CC		= gcc
 CFLAGS		= -I$(HOME_DIR)/include -Wall -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
 LFLAGS		= -m elf_i386 --oformat binary -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
-LFLAGS2		= -m elf_i386 -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
+LFLAGS2		= -m elf_i386 -T $(LD_SCRIPT) -Map kernel_e.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 ASFLAGS		= -c -m32 -I$(HOME_DIR)/include
 NASM		= nasm
 LD		= ld
@@ -59,11 +59,13 @@ LD_SCRIPT_PATH 	= ../ldscript
 LD_SCRIPT	= $(LD_SCRIPT_PATH)/kernel.ld
 KERNEL_ENTRY	= startup_32
 
+BSS_AREA	= bss.img
 
 kernel.img : $(OBJS) Makefile
 	$(LD) $(LFLAGS) -o kernel.img $(OBJS)
 	$(LD) $(LFLAGS2) -o kernel.elf $(OBJS)
-
+	$(CAT) kernel.img > kernel_plain.img
+	#$(CAT) kernel_plain.img $(BSS_AREA) > kernel.img
 default :
 	$(MAKE) kernel.img
 

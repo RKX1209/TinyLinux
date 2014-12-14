@@ -4,7 +4,7 @@ USER_NAME	= rkx
 
 #---Build Command---
 CC		= gcc
-CFLAGS		= -fomit-frame-pointer -O2 -I$(HOME_DIR)/include -masm=intel -Wall
+CFLAGS		= -fomit-frame-pointer -I$(HOME_DIR)/include -masm=intel -Wall
 LFLAGS		= -T kernel_ld -Map kernel.map -nostdlib -e kernel_main --oformaty binary
 ASFLAGS		= -msyntax=intel -march=i686 --32
 NASM		= nasm

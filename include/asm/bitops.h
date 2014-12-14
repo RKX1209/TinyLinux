@@ -2,28 +2,34 @@
  * include/asm/bitops.h
  * Copyright (C) <2014>  <@RKX1209>
  */
-
 static inline int test_and_set_bit(int nr, volatile unsigned long * addr)
 {
-  int oldbit;
-
-  __asm__(
-	  "btsl %2,%1\n\tsbbl %0,%0"
-	  :"=r" (oldbit),"=m" (addr)
-	  :"Ir" (nr));
-  return oldbit;
+  unsigned long index = nr / 32;
+  unsigned long * tmp = &((addr)[index]);
+  unsigned char bit = 32 - (nr % 32) - 1;
+  *tmp = *tmp | (1 << bit);
+  //printk("%d=>index:%d bit:%d",nr,index,bit);
+    
+  /* unsigned long oldbit; */
+  /* __asm__( */
+  /* 	  "btsl %2,%1\n\tsbbl %0,%0" */
+  /* 	  :"=r" (oldbit),"=m" (addr) */
+  /* 	  :"Ir" (nr)); */
+  return 1;
 }
 
 
-static inline int test_and_clear_bit(int nr, volatile unsigned long * addr){
-  int oldbit;
-  __asm__ __volatile__ (
-	"lock ; \n\t" 
-	"btrl %2,%1\n\t" 
-	"sbbl %0,%0"
-	: "=r" (oldbit), "=m" (addr)
-	: "Ir" (nr) : "memory");
-  return oldbit;
+static int test_and_clear_bit(int nr, volatile unsigned long * addr){
+  unsigned long index = nr / 32;
+  unsigned long * tmp = &((addr)[index]);
+  unsigned char bit = 32 - (nr % 32) - 1;
+  *tmp = *tmp & ~(1 << bit);
+ 
+	/* __asm__ __volatile__( */
+	/* 	"btrl %2,%1\n\tsbbl %0,%0" */
+	/* 	:"=r" (oldbit),"=m" (addr) */
+	/* 	:"Ir" (nr) : "memory"); */
+ return 1;  
 }
 
 static inline int find_first_zero_bit(const unsigned long *addr, unsigned size)
@@ -50,8 +56,13 @@ static inline int find_first_zero_bit(const unsigned long *addr, unsigned size)
   return res;
 }
 
-static inline int constant_test_bit(int nr, const volatile unsigned long *addr){
-  return ((1UL << (nr & 31)) & (addr[nr >> 5])) != 0;
+static int constant_test_bit(int nr, const volatile unsigned long *addr){
+  unsigned long index = nr / 32;
+  unsigned long * tmp = &((addr)[index]);  
+  unsigned char bit = 32 - (nr % 32) - 1;
+  
+  if(*tmp & (1 << bit)) return 1;
+  return 0;
 }
 
 #define test_bit(nr,addr) \
