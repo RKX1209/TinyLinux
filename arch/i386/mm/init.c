@@ -3,6 +3,8 @@
  * Copyright (C) <2014>  <@RKX1209>
  */
 #include <abyon/bootmem.h>
+#include <abyon/init_task.h>
+#include <abyon/sched.h>
 
 #include <asm/system.h>
 #include <asm/page.h>
@@ -13,8 +15,6 @@
 
 extern int printk(const char *fmt, ...);
 
-unsigned long pgdtable[2048];
-unsigned long ptetable[2048][2048];
 static inline int is_kernel_text(unsigned long addr){
   //if(PAGE_OFFSET <= addr && addr <= (unsigned long)_text_end)
   return 1;
@@ -29,9 +29,7 @@ static pte_t *one_page_table_init(pgd_t *pgd){
     pgd->pgd = (ph_addr | _PAGE_TABLE);
     return page_table;
   }
-  //printk("pte exist0x%x",(pte_t*)(pgd->pgd));
   return pgd_pa_addr(*pgd,0);
-  //return pgd->pgd;
 }
 
 static void page_table_range_init(unsigned long start,unsigned long end,pgd_t *pgd_base){
@@ -74,7 +72,6 @@ static void kernel_physical_mapping_init(pgd_t *pgd_base){
 
   pgd = pgd_base;
   printk("Setting memory tables...");
-  printk("pgd_base(after):0x%x",pgd_base);
 
   unsigned long address;
   unsigned long pfn = 0;
@@ -103,7 +100,6 @@ static void kernel_physical_mapping_init(pgd_t *pgd_base){
 
 static void pagetable_init(void){
   /* Set page tables of "straight map area" */
-  //pgd_t *pgd_base = (pgd_t*)(swapper_pg_dir);
   pgd_t *pgd_base = (pgd_t*)swapper_pg_dir;
   kernel_physical_mapping_init(pgd_base);  
 

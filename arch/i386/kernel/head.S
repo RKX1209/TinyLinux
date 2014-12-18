@@ -27,8 +27,8 @@ startup_32:
 	/* Set temporary segments */
 	cld
 	lgdt boot_gdt_descr 
-	movl $(stack_end ),%esp
-	movl $(stack_end ),%ebp		
+	movl $(_data_init_task_end),%esp
+	movl $(_data_init_task_end),%ebp		
 	movl $(__BOOT_DS),%eax
 	
 	movl %eax,%ds
@@ -89,6 +89,7 @@ startup_32:
 	pushl $0
 	popfl
 
+	call setup_idt
 	call kernel_main
 /* sets up a idt with 256 entries pointing to
  * ignore_int(default interupt handler)
@@ -126,29 +127,30 @@ stack_begin:
 	.word 0
 stack_end:	
 	.fill 256,1,0
-
-
-idt_table:	.fill 256,8,0
 	
 boot_gdt_descr:
 	.word __BOOT_DS+7
 	.long boot_gdt_table
 	.word 0
 
+.global idt_descr
 idt_descr:
 	.word IDT_ENTRIES*8-1
 	.long idt_table
 	.word 0
-	
+
+.global cpu_gdt_descr	
 cpu_gdt_descr:
 	.word GDT_ENTRIES*8-1
 	.long cpu_gdt_table	
 
+.global boot_gdt_table
 boot_gdt_table:	
 	.fill GDT_ENTRY_BOOT_CS,8,0
 	.quad 0x00cf9a000000ffff	/* kernel 4GB code at 0x00000000 */
 	.quad 0x00cf92000000ffff	/* kernel 4GB data at 0x00000000 */
-	
+
+.global cpu_gdt_table	
 cpu_gdt_table:	
 	.quad 0x0000000000000000	/* NULL descriptor */
 	.quad 0x0000000000000000	/* 0x0b reserved */
@@ -191,6 +193,10 @@ cpu_gdt_table:
 	.quad 0x0000000000000000	/* 0xe8 - unused */
 	.quad 0x0000000000000000	/* 0xf0 - unused */
 	.quad 0x0000000000000000	/* 0xf8 - GDT entry 31: double-fault TSS */
+
+.section ".data.idt","w"
+idt_table:	.fill 256,8,0
+
 .bss
 .global swapper_pg_dir
 swapper_pg_dir:

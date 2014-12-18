@@ -55,5 +55,7 @@
 #define wmb() __asm__ __volatile__("sfence");
 #define smp_wmb() wmb()
 
+/* Enable Interupt (set IF = 1) */
+#define local_irq_enable() __asm__ __volatile__("sti": : :"memory")
 
 #endif

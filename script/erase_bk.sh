@@ -3,7 +3,7 @@
 # ../include/*/*.h~ ../include/*/*.c~ ../lib/*.h~ ../lib/*.c~ \
 # ../mm/*.h~ ../mm/*.c~ ../script/*.sh~ Makefile~
 
-rm ../kernel/*~ ../arch/i386/*/*~ \
+rm ../kernel/*~ ../arch/i386/*/*~ ../arch/i386/*/*/*~ \
 ../include/*/*~ ../include/*/*/*~ ../lib/*~ \
 ../drivers/vram/*~ ../mm/*~ ../script/*~ \
 ../ldscript/*~ ../*~ 

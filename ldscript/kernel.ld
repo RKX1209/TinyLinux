@@ -22,8 +22,29 @@ SECTIONS
         *(.data)
         _data_end = .;
     }
+
+    . = ALIGN(4096);
+
+    .data.idt :
+    {
+        _data_idt_start = .;
+        *(.data.idt)
+        _data_idt_end = .;
+    }    
+
+    . = ALIGN(8192);	/* init_task (THREAD_SIZE = 8192)*/
+
+    .data.init_task :
+    {
+	_data_init_task_start = .;
+	*(.data.init_task)
+	_data_init_task_end = .;
+    }
+
+    _font_data = .;
     . += 0x3000; /* font data area */
     . = ALIGN(4096);
+
     .bss :
     {
         _bss_start = .;

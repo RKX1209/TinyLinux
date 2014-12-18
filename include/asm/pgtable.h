@@ -6,14 +6,10 @@
 #ifndef _I386_PGTABLE_H
 #define _I386_PGTABLE_H
 
+#include <abyon/init_task.h>
+
 #include <asm/page.h>
 #include <asm/system.h>
-
-
-struct mm_struct{
-  pgd_t* pgd;
-};
-struct mm_struct init_mm;
 
 extern pgd_t swapper_pg_dir[1024];
 

@@ -34,7 +34,7 @@ int vprintk(const char *fmt, va_list args){
   for(i = 0; i < lines; i++){    
     putfonts_str(vram,320,0,y + i * 16,COL8_FFFFFF,
 		 __log_buf[log_start + i],
-		 (unsigned char *)&kernel_end);
+		 (unsigned char *)&_font_data);
   }
   log_end++;
   lines = (log_end - log_start + 1);
@@ -46,7 +46,6 @@ int printk(const char *fmt, ...){
   va_list args;
   va_start(args,fmt);
   int r = vprintk(fmt,args);
-  //y += 16;
   return r;
 }
 

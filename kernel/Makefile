@@ -1,6 +1,8 @@
  OBJS		= $(ARCH_KERNEL)/head.o $(KERNEL)/main.o $(KERNEL)/gasfunc\
-		  $(KERNEL)/printk.o \
-		  $(ARCH_KERNEL)/setup.o \
+		  $(KERNEL)/sched.o $(KERNEL)/printk.o \
+		  $(ARCH_KERNEL)/setup.o $(ARCH_KERNEL)/traps.o $(ARCH_KERNEL)/entry.o \
+                  $(ARCH_KERNEL)/init_task.o \
+                  $(ARCH_KERNEL_CPU)/common.o \
 		  $(ARCH_MM)/init.o \
 		  $(ARCH_LIB)/memcpy.o $(ARCH_LIB)/bitops.o \
 		  $(MM)/bootmem.o $(MM)/page_alloc.o \
@@ -9,7 +11,6 @@
 		  $(ARCH_KERNEL)/tail.o
 
 HOME_DIR	= ..
-USER_NAME	= rkx
 
 #---Build Command---
 CC		= gcc
@@ -37,6 +38,7 @@ KERNEL		= .
 ARCH		= ../arch
 ARCH_BOOT	= $(ARCH)/boot
 ARCH_KERNEL	= $(ARCH)/kernel
+ARCH_KERNEL_CPU	= $(ARCH_KERNEL)/cpu
 ARCH_MM		= $(ARCH)/mm
 ARCH_LIB	= $(ARCH)/lib
 #-------------------------
@@ -59,8 +61,6 @@ LD_SCRIPT_PATH 	= ../ldscript
 LD_SCRIPT	= $(LD_SCRIPT_PATH)/kernel.ld
 KERNEL_ENTRY	= startup_32
 
-BSS_AREA	= bss.img
-
 kernel.img : $(OBJS) Makefile
 	$(LD) $(LFLAGS) -o kernel.img $(OBJS)
 	$(LD) $(LFLAGS2) -o kernel.elf $(OBJS)
@@ -72,8 +72,6 @@ default :
 img :
 	$(MAKE) kernel.img
 
-clean :
-	$(SUDO) $(RM) *.img
 
 %.o  :  %.c Makefile
 	$(CC) -m32 -c -o $*.o $*.c $(CFLAGS)

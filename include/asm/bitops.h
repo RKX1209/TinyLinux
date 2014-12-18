@@ -65,6 +65,21 @@ static int constant_test_bit(int nr, const volatile unsigned long *addr){
   return 0;
 }
 
+static inline void __set_bit(int nr, volatile unsigned long * addr) {
+
+	__asm__(
+		"btsl %1,%0"
+		:"=m" (addr)
+		:"Ir" (nr));
+
+}
+static inline void __clear_bit(int nr, volatile unsigned long * addr)
+{
+	__asm__ __volatile__(
+		"btrl %1,%0"
+		:"=m" (addr)
+		:"Ir" (nr));
+}
 #define test_bit(nr,addr) \
   constant_test_bit((nr),(addr))
 

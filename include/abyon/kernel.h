@@ -9,5 +9,6 @@
 
 
 #define ALIGN(x,a) ( ( (x)+(a)-1)&~( (a)-1) )
+#define fastcall        __attribute__((regparm(3)))
 
 #endif
