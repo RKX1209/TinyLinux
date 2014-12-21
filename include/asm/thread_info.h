@@ -6,6 +6,7 @@
 #ifndef _ASM_THREAD_INFO_H
 #define _ASM_THREAD_INFO_H
 
+
 #define THREAD_SIZE 8192
 
 #ifndef __ASSEMBLY__
@@ -70,6 +71,16 @@ static inline struct thread_info *current_thread_info(void){
 #define _TIF_WORK_MASK \
   (0x0000FFFF & ~(_TIF_SYSCALL_TRACE|_TIF_SYSCALL_AUDIT|_TIF_SINGLESTEP|\
 		  _TIF_SECCOMP|_TIF_SYSCALL_EMU))
+
+#define INIT_THREAD_INFO(tsk)			\
+{						\
+	.task		= &tsk,			\
+	.exec_domain	= 0,	\
+	.flags		= 0,			\
+	.cpu		= 0,			\
+	.preempt_count	= 1,			\
+	.addr_limit	= __KERNEL_DS,		\
+}
 #endif
 
 

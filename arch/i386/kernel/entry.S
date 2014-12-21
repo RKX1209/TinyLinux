@@ -3,7 +3,8 @@
  * Copyright (C) <2014>  <@RKX1209>
  */
 
-#define __ASSEMBLY__	
+#define __ASSEMBLY__
+#include <asm/irq.h>	
 #include <asm/irq_vectors.h>
 #include <asm/segment.h>
 #include <asm/thread_info.h>
@@ -44,9 +45,6 @@ VM_MASK		= 0x00020000
 	pushl %edx; \
 	pushl %ecx; \
 	pushl %ebx; \
-	movl $(__USER_DS), %edx; \
-	movl %edx, %ds; \
-	movl %edx, %es;
 	
 #define RESTORE_INT_REGS \
 	popl %ebx;	\
@@ -61,7 +59,7 @@ VM_MASK		= 0x00020000
 	RESTORE_INT_REGS; \
 1:	popl %ds;	\
 2:	popl %es;	\
-.section .fixup,"ax";	\
+/*.section .fixup,"ax";	\
 3:	movl $0,(%esp);	\
 	jmp 1b;		\
 4:	movl $0,(%esp);	\
@@ -72,7 +70,7 @@ VM_MASK		= 0x00020000
 	.long 1b,3b;	\
 	.long 2b,4b;	\
 .previous
-	
+*/	
 	
 ret_from_exception:
 ret_from_intr:
@@ -101,8 +99,8 @@ restore_all:
 	cmpl $((4 << 8) | 3), %eax
 	//je ldt_ss
 restore_nocheck:
-	RESTORE_REGS
-	addl $4, %esp
+	RESTORE_REGS // BUG
+	//addl $4, %esp
 1:	iret
 
 work_pending:
@@ -122,6 +120,32 @@ work_pending:
 	FIXUP_ESPFIX_STACK \
 28:	popl %eax		;
 
+
+.data
+.global interrupt
+interrupt:	
+.text
+vector=0	
+.global irq_entries_start
+irq_entries_start:
+.rept NR_IRQS
+	pushl $vector-256
+	jmp common_interrupt
+.data
+	.long irq_entries_start
+.text
+vector=vector+1
+.endr 
+	
+common_interrupt:
+	SAVE_ALL //BUG
+	//movl %esp,%eax
+	call do_IRQ
+	RESTORE_REGS // BUG
+	addl $4, %esp
+	iret
+	//jmp ret_from_intr
+	
 .global system_call
 system_call:
 syscall_exit:	

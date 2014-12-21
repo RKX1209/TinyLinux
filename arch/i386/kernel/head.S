@@ -26,10 +26,10 @@
 startup_32:
 	/* Set temporary segments */
 	cld
-	lgdt boot_gdt_descr 
+	lgdt cpu_gdt_descr 
 	movl $(_data_init_task_end),%esp
 	movl $(_data_init_task_end),%ebp		
-	movl $(__BOOT_DS),%eax
+	movl $(__KERNEL_DS),%eax
 	
 	movl %eax,%ds
 	movl %eax,%es
@@ -84,7 +84,7 @@ startup_32:
 	movl %cr0,%eax
 	orl $0x80000000,%eax 
 	movl %eax,%cr0*/
-	ljmp $__BOOT_CS,$1f	/* Clear prefetch and normalize %eip */
+	ljmp $__KERNEL_CS,$1f	/* Clear prefetch and normalize %eip */
 1:
 	pushl $0
 	popfl
@@ -127,29 +127,36 @@ stack_begin:
 	.word 0
 stack_end:	
 	.fill 256,1,0
-	
+
+.global idt_descr	
+.global cpu_gdt_descr
+.global boot_gdt_table
+
+.align 4096
+# early boot GDT descriptor (must use 1:1 address mapping)
 boot_gdt_descr:
 	.word __BOOT_DS+7
 	.long boot_gdt_table
-	.word 0
 
-.global idt_descr
+.align 4096
 idt_descr:
-	.word IDT_ENTRIES*8-1
+	.word IDT_ENTRIES*8-1		# idt contains 256 entries
 	.long idt_table
-	.word 0
 
-.global cpu_gdt_descr	
+# boot GDT descriptor (later on used by CPU#0):
+
+.align 4096				# 32 bit align gdt_desc.address
 cpu_gdt_descr:
 	.word GDT_ENTRIES*8-1
-	.long cpu_gdt_table	
+	.long cpu_gdt_table
 
-.global boot_gdt_table
+.align 4096
 boot_gdt_table:	
 	.fill GDT_ENTRY_BOOT_CS,8,0
 	.quad 0x00cf9a000000ffff	/* kernel 4GB code at 0x00000000 */
 	.quad 0x00cf92000000ffff	/* kernel 4GB data at 0x00000000 */
 
+.align 4096
 .global cpu_gdt_table	
 cpu_gdt_table:	
 	.quad 0x0000000000000000	/* NULL descriptor */
@@ -195,7 +202,7 @@ cpu_gdt_table:
 	.quad 0x0000000000000000	/* 0xf8 - GDT entry 31: double-fault TSS */
 
 .section ".data.idt","w"
-idt_table:	.fill 256,8,0
+idt_table:
 
 .bss
 .global swapper_pg_dir

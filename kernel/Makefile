@@ -1,8 +1,10 @@
  OBJS		= $(ARCH_KERNEL)/head.o $(KERNEL)/main.o $(KERNEL)/gasfunc\
 		  $(KERNEL)/sched.o $(KERNEL)/printk.o \
+		  $(KERNEL_IRQ)/manage.o \
 		  $(ARCH_KERNEL)/setup.o $(ARCH_KERNEL)/traps.o $(ARCH_KERNEL)/entry.o \
-                  $(ARCH_KERNEL)/init_task.o \
-                  $(ARCH_KERNEL_CPU)/common.o \
+		  $(ARCH_KERNEL)/init_task.o $(ARCH_KERNEL)/i8259.o $(ARCH_KERNEL)/irq.o \
+		  $(ARCH_KERNEL_CPU)/common.o \
+		  $(ARCH_KERNEL_TIMERS)/timer_pit.o \
 		  $(ARCH_MM)/init.o \
 		  $(ARCH_LIB)/memcpy.o $(ARCH_LIB)/bitops.o \
 		  $(MM)/bootmem.o $(MM)/page_alloc.o \
@@ -32,15 +34,17 @@ SUDO		= sudo
 
 #---Kernel path-------------
 KERNEL		= .
+KERNEL_IRQ	= $(KERNEL)/irq
 #-------------------------
 
 #---Arch path-------------
-ARCH		= ../arch
-ARCH_BOOT	= $(ARCH)/boot
-ARCH_KERNEL	= $(ARCH)/kernel
-ARCH_KERNEL_CPU	= $(ARCH_KERNEL)/cpu
-ARCH_MM		= $(ARCH)/mm
-ARCH_LIB	= $(ARCH)/lib
+ARCH			= ../arch
+ARCH_BOOT		= $(ARCH)/boot
+ARCH_KERNEL		= $(ARCH)/kernel
+ARCH_KERNEL_CPU		= $(ARCH_KERNEL)/cpu
+ARCH_KERNEL_TIMERS 	= $(ARCH_KERNEL)/timers
+ARCH_MM			= $(ARCH)/mm
+ARCH_LIB		= $(ARCH)/lib
 #-------------------------
 
 #---MM path-------------
@@ -78,6 +82,18 @@ img :
 
 %.o :	%.S Makefile
 	$(CC) -o $*.o $*.S $(ASFLAGS)
+
+$(KERNEL_IRQ)/%.o : $(KERNEL_IRQ)/%.c Makefile
+	$(CC) -m32 -c -o $(KERNEL_IRQ)/$*.o $(KERNEL_IRQ)/$*.c $(CFLAGS)
+
+$(KERNEL_IRQ)/%.o : $(KERNEL_IRQ)/%.S Makefile
+	$(CC) -o $(KERNEL_IRQ)/$*.o $(KERNEL_IRQ)/$*.S $(ASFLAGS)
+
+$(ARCH_KERNEL_CPU)/%.o : $(ARCH_KERNEL_CPU)/%.c Makefile
+	$(CC) -m32 -c -o $(ARCH_KERNEL_CPU)/$*.o $(ARCH_KERNEL_CPU)/$*.c $(CFLAGS)
+
+$(ARCH_KERNEL_CPU)/%.o : $(ARCH_KERNEL_CPU)/%.S Makefile
+	$(CC) -o $(ARCH_KERNEL_CPU)/$*.o $(ARCH_KERNEL_CPU)/$*.S $(ASFLAGS)
 
 $(ARCH_KERNEL)/%.o : $(ARCH_KERNEL)/%.c Makefile
 	$(CC) -m32 -c -o $(ARCH_KERNEL)/$*.o $(ARCH_KERNEL)/$*.c $(CFLAGS)

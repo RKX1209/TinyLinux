@@ -72,4 +72,12 @@ struct thread_struct {
   unsigned long	iopl;
   unsigned long	io_bitmap_max;
 };
+
+#define INIT_THREAD  {							\
+	.io_bitmap_ptr = NULL,						\
+}
+
+static inline void load_esp0(struct tss_struct *tss, struct thread_struct *thread){
+  tss->esp0 = thread->esp0;
+}
 #endif

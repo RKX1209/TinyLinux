@@ -8,6 +8,7 @@
 
 #include <asm/desc.h>
 #include <asm/processor.h>
+#include <asm/segment.h>
 #include <asm/thread_info.h>
 
 /* struct mm_struct init_mm = INIT_MM(init_mm); */
@@ -18,6 +19,6 @@ struct mm_struct init_mm;
 
 struct task_struct init_task;
 
-union thread_union init_thread_union __attribute__((__section__(".data.init_task")));
+union thread_union init_thread_union __attribute__((__section__(".data.init_task"))) = { INIT_THREAD_INFO(init_task) };
 
-DEFINE_PER_CPU(struct tss_struct, init_tss);
+DEFINE_PER_CPU(struct tss_struct, init_tss) = INIT_TSS;

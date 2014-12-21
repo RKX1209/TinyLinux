@@ -1,5 +1,5 @@
 #! /bin/sh
-wc ../kernel/* \
+wc ../kernel/* ../kernel/*/* \
 ../arch/i386/*/* ../arch/i386/*/*/* \
 ../include/*/* ../include/*/*/* \
 ../boot/* \
