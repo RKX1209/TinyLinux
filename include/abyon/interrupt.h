@@ -24,5 +24,19 @@ struct irqaction{
   int irq;
 };
 
+enum
+{
+  HI_SOFTIRQ=0,
+  TIMER_SOFTIRQ,
+  NET_TX_SOFTIRQ,
+  NET_RX_SOFTIRQ,
+  SCSI_SOFTIRQ,
+  TASKLET_SOFTIRQ
+};
+
+struct softirq_action{
+  void (*action)(struct softirq_action *);
+  void *data;
+};
 
 #endif

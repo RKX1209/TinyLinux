@@ -2,7 +2,10 @@
  * include/abyon/irq.h
  * Copyright (C) <2014>  <@RKX1209>
  */
+#ifndef _ABYON_IRQ_H
+#define _ABYON_IRQ_H
 
+#include <abyon/kernel.h>
 #include <abyon/interrupt.h>
 
 #include <asm/irq.h>
@@ -39,3 +42,8 @@ struct irqaction *action;
 }irq_desc_t;
 struct hw_interrupt_type no_irq_type;
 irq_desc_t irq_desc [NR_IRQS];
+
+extern fastcall int handle_IRQ_event(unsigned int irq, struct pt_regs *regs,
+					struct irqaction *action);
+extern fastcall unsigned int __do_IRQ(unsigned int irq, struct pt_regs *regs);
+#endif

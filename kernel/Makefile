@@ -1,5 +1,5 @@
  OBJS		= $(ARCH_KERNEL)/head.o $(KERNEL)/main.o $(KERNEL)/gasfunc\
-		  $(KERNEL)/sched.o $(KERNEL)/printk.o \
+		  $(KERNEL)/sched.o $(KERNEL)/printk.o $(KERNEL)/timer.o $(KERNEL)/softirq.o \
 		  $(KERNEL_IRQ)/manage.o \
 		  $(ARCH_KERNEL)/setup.o $(ARCH_KERNEL)/traps.o $(ARCH_KERNEL)/entry.o \
 		  $(ARCH_KERNEL)/init_task.o $(ARCH_KERNEL)/i8259.o $(ARCH_KERNEL)/irq.o \

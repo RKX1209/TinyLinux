@@ -6,6 +6,7 @@
 #ifndef __ASM_DESC_H
 #define __ASM_DESC_H
 
+#include <abyon/kernel.h>
 #include <abyon/percpu.h>
 
 #include <asm/processor.h>
@@ -49,7 +50,6 @@ __asm__ __volatile__ ("movw %w3,0(%2)\n\t" \
 	"rorl $16,%1" \
 	: "=m"(*(n)) : "q" (addr), "r"(n), "ir"(limit), "i"(type))
 
-#define offsetof(TYPE, MEMBER) ((unsigned long) &((TYPE *)0)->MEMBER)
 
 static inline void __set_tss_desc(unsigned int cpu, unsigned int entry, void *addr){
   _set_tssldt_desc(&get_cpu_gdt_table(cpu)[entry], (int)addr,

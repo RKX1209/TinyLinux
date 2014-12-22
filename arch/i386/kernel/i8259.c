@@ -106,11 +106,9 @@ void init_IRQ(void){
     int vector = FIRST_EXTERNAL_VECTOR + i;
     if(i >= NR_IRQS) break;
     //interrupt[i] = interrupt_stub;
-    printk("idt_table[%d](0x%x)->0x%x",vector,&interrupt[i],interrupt[i]);
+    //printk("idt_table[%d](0x%x)->0x%x",vector,&interrupt[i],interrupt[i]);
     if(vector != SYSCALL_VECTOR) set_intr_gate(vector,interrupt[i]);
   }
-  //printk("goto (0x%x)",interrupt[15]);
-  //interrupt[15]();
   setup_irq(2,&irq2);
   setup_pit_timer();
   outb(0xf9, PIC_MASTER_IMR);

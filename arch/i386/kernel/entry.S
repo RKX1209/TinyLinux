@@ -99,8 +99,8 @@ restore_all:
 	cmpl $((4 << 8) | 3), %eax
 	//je ldt_ss
 restore_nocheck:
-	RESTORE_REGS // BUG
-	//addl $4, %esp
+	RESTORE_REGS
+	addl $4, %esp
 1:	iret
 
 work_pending:
@@ -138,13 +138,10 @@ vector=vector+1
 .endr 
 	
 common_interrupt:
-	SAVE_ALL //BUG
-	//movl %esp,%eax
+	SAVE_ALL
+	movl %esp,%eax
 	call do_IRQ
-	RESTORE_REGS // BUG
-	addl $4, %esp
-	iret
-	//jmp ret_from_intr
+	jmp ret_from_intr
 	
 .global system_call
 system_call:
