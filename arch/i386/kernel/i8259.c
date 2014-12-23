@@ -49,7 +49,6 @@ static struct hw_interrupt_type i8259A_irq_type = {
 };
 
 void init_8259A(int auto_eoi){
-  printk("Initializing PIC(8259A)...");
   outb(0xff,PIC_MASTER_IMR);
   outb(0xff,PIC_SLAVE_IMR);
 
@@ -99,7 +98,6 @@ void interrupt_stub(){
 }
 
 void init_IRQ(void){
-  printk("init_IRQ...");
   init_ISA_irqs();
   unsigned long i;
   for(i = 0; i < (NR_VECTORS - FIRST_EXTERNAL_VECTOR); i++){

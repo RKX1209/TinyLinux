@@ -16,7 +16,8 @@ HOME_DIR	= ..
 
 #---Build Command---
 CC		= gcc
-CFLAGS		= -I$(HOME_DIR)/include -Wall -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
+#CFLAGS		= -I$(HOME_DIR)/include -Wall -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
+CFLAGS		= -I$(HOME_DIR)/include -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
 LFLAGS		= -m elf_i386 --oformat binary -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 LFLAGS2		= -m elf_i386 -T $(LD_SCRIPT) -Map kernel_e.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 ASFLAGS		= -c -m32 -I$(HOME_DIR)/include

@@ -13,13 +13,20 @@
 #include <asm/highmem.h>
 #include <asm/tlbflush.h>
 
+extern unsigned long _text_start;
+extern unsigned long _text_end;
+extern unsigned long _data_start;
+extern unsigned long _data_end;
+extern unsigned long _bss_start;
+extern unsigned long _bss_end;
+
 extern int printk(const char *fmt, ...);
 
 static inline int is_kernel_text(unsigned long addr){
-  //if(PAGE_OFFSET <= addr && addr <= (unsigned long)_text_end)
-  return 1;
+  if(_text_start <= addr && addr <= _text_end) return 1;
+  return 0;
 }
-static unsigned long i;
+
 static pte_t *one_page_table_init(pgd_t *pgd){
   if(pgd_none(*pgd)){
 
@@ -71,7 +78,6 @@ static void kernel_physical_mapping_init(pgd_t *pgd_base){
   int pgd_idx,pte_idx;
 
   pgd = pgd_base;
-  printk("Setting memory tables...");
 
   unsigned long address;
   unsigned long pfn = 0;
@@ -86,12 +92,12 @@ static void kernel_physical_mapping_init(pgd_t *pgd_base){
     if(is_kernel_text(address))
       set_pte(pte_entry,pfn_pte(pfn,PAGE_KERNEL_EXEC));
     else
-      set_pte(pte_entry,pfn_pte(pfn,PAGE_KERNEL_EXEC));
+      set_pte(pte_entry,pfn_pte(pfn,PAGE_KERNEL));
     
-    if(pfn < 2){
+    /*if(pfn < 2){
       printk("virt:0x%x->pgd[%d](0x%x)=(0x%x)",address,pgd_idx,&pgd[pgd_idx],pgd[pgd_idx].pgd);
       printk("=>pte(0x%x) pte[%d](0x%x) ph[0x%x]",pte,pte_idx,pte_entry,pte_entry->pte_low);
-    }
+    } */
     
   }
   printk("Setting memory tables... [OK]");
@@ -116,11 +122,10 @@ static void pagetable_init(void){
 void paging_init(void){
   pagetable_init();
   pgd_t* pgd_base = (pgd_t*)swapper_pg_dir;
-  unsigned long pfn;
   
   write_cr3(pgd_base);
-  unsigned long cr3i = read_cr3();
-  unsigned long cr4i = read_cr4();
+  //unsigned long cr3i = read_cr3();
+  //unsigned long cr4i = read_cr4();
   unsigned long cr0i = read_cr0();
   cr0i |= 0x80000000;
   write_cr0(cr0i);  

@@ -39,4 +39,26 @@ struct softirq_action{
   void *data;
 };
 
+extern void open_softirq(int nr, void (*action)(struct softirq_action*), void *data);
+extern void softirq_init(void);
+
+enum
+{
+  TASKLET_STATE_SCHED,	/* Tasklet is scheduled for execution */
+  TASKLET_STATE_RUN	/* Tasklet is running (SMP only) */
+};
+
+struct tasklet_struct{
+  struct tasklet_struct *next;
+  unsigned long state;
+  void (*func)(unsigned long);
+  unsigned long data;
+};
+
+#define DECLARE_TASKLET(name, func, data) \
+struct tasklet_struct name = { 0, 0, 0, func, data }
+
+#define DECLARE_TASKLET_DISABLED(name, func, data) \
+struct tasklet_struct name = { 0, 0, 1, func, data }
+
 #endif

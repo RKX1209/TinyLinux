@@ -112,11 +112,11 @@ void * __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long size,
       areasize = 0;
       /* last_pos unchanged */
       bdata->last_offset = offset+size;
-      ret = bdata->last_pos*PAGE_SIZE + offset + bdata->node_boot_start;
+      ret = (void*)(bdata->last_pos*PAGE_SIZE + offset + bdata->node_boot_start);
     } else {
       remaining_size = size - remaining_size;
       areasize = (remaining_size+PAGE_SIZE-1)/PAGE_SIZE;
-      ret = bdata->last_pos*PAGE_SIZE + offset + bdata->node_boot_start;
+      ret = (void*)(bdata->last_pos*PAGE_SIZE + offset + bdata->node_boot_start);
       bdata->last_pos = start+areasize-1;
       bdata->last_offset = remaining_size;
     }
@@ -124,7 +124,7 @@ void * __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long size,
   } else {
     bdata->last_pos = start + areasize - 1;
     bdata->last_offset = size & ~PAGE_MASK;
-    ret = start * PAGE_SIZE + bdata->node_boot_start;
+    ret = (void*)(start * PAGE_SIZE + bdata->node_boot_start);
   }
 
   for (i = start; i < start+areasize; i++)

@@ -11,7 +11,6 @@
 
 char __log_buf[__LOG_BUF_LEN][256];
 static int log_buf_lim = __LOG_BUF_LIMIT;
-static unsigned long logged_chars;
 
 static unsigned long log_start;
 static unsigned long log_end;

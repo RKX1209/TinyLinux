@@ -5,7 +5,7 @@
 static inline int test_and_set_bit(int nr, volatile unsigned long * addr)
 {
   unsigned long index = nr / 32;
-  unsigned long * tmp = &((addr)[index]);
+  unsigned long * tmp = (unsigned long *)&((addr)[index]);
   unsigned char bit = 32 - (nr % 32) - 1;
   *tmp = *tmp | (1 << bit);
   //printk("%d=>index:%d bit:%d",nr,index,bit);
@@ -21,7 +21,7 @@ static inline int test_and_set_bit(int nr, volatile unsigned long * addr)
 
 static int test_and_clear_bit(int nr, volatile unsigned long * addr){
   unsigned long index = nr / 32;
-  unsigned long * tmp = &((addr)[index]);
+  unsigned long * tmp = (unsigned long *)&((addr)[index]);
   unsigned char bit = 32 - (nr % 32) - 1;
   *tmp = *tmp & ~(1 << bit);
  
@@ -58,7 +58,7 @@ static inline int find_first_zero_bit(const unsigned long *addr, unsigned size)
 
 static int constant_test_bit(int nr, const volatile unsigned long *addr){
   unsigned long index = nr / 32;
-  unsigned long * tmp = &((addr)[index]);  
+  unsigned long * tmp = (unsigned long *)&((addr)[index]);  
   unsigned char bit = 32 - (nr % 32) - 1;
   
   if(*tmp & (1 << bit)) return 1;
