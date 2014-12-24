@@ -9,7 +9,7 @@ It haven't been stable yet and you should be carefull when running.
 Installation
 ---------------
 ``` shell
-$ git https://github.com/RKX1209/Abyon.git
+$ git clone https://github.com/RKX1209/Abyon.git
 $ cd Abyon  
 $ make install 
 ```
