@@ -153,7 +153,6 @@ static void run_timer_softirq(struct softirq_action *h){
 }
 
 void init_timers(void){
-  printk("init_timers...");
   timer_cpu_notify((unsigned long)CPU_UP_PREPARE,(void *)(long)smp_processor_id());
   open_softirq(TIMER_SOFTIRQ, run_timer_softirq, 0);
   printk("init_timers... [OK]");

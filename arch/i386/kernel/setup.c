@@ -15,6 +15,17 @@ extern unsigned long _fin_end;
 void paging_init(void);
 unsigned long init_pg_tables_end = ~0UL;
   
+void init_e820(){
+  e820.nr_map = 7;
+  e820.map[0] = (struct e820entry){ 0x00000000,0x0009ffff, E820_RAM };
+  e820.map[1] = (struct e820entry){ 0x000f0000,65536, E820_RESERVED };
+  e820.map[2] = (struct e820entry){ 0x00100000,133103616, E820_RAM };
+  e820.map[3] = (struct e820entry){ 0x07ff0000,125841408, E820_ACPI };
+  e820.map[4] = (struct e820entry){ 0x07ff3000,53248, E820_ACPI };
+  e820.map[5] = (struct e820entry){ 0x08000000,4160684032, E820_RAM };
+  e820.map[6] = (struct e820entry){ 0xffff0000,65536, E820_RESERVED };
+}
+
 /* Enable bootmem low pages */
 static void register_bootmem_low_pages(unsigned long max_low_pfn){
   int i;

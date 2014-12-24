@@ -124,7 +124,6 @@ static void set_task_gate(unsigned int n, unsigned int gdt_entry){
 }
 
 void trap_init(void){
-  printk("trap_init...");
   set_trap_gate(0,&divide_error);
   set_intr_gate(1,&debug);
   set_intr_gate(2,&nmi);

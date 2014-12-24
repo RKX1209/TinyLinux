@@ -11,7 +11,6 @@
 extern int printk(const char *fmt, ...);
 
 void setup_pit_timer(void){
-  printk("Initializing PIT...");
   unsigned long flags;
   outb_p(0x34,PIT_MODE);		/* binary, mode 2, LSB/MSB, ch 0 */
   //udelay(10);

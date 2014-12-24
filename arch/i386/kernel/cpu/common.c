@@ -28,8 +28,8 @@ void cpu_init(void){
   //unsigned long *gp = (unsigned long)(&cpu_gdt_descr[cpu]);
   //unsigned long *ip = (unsigned long)(&idt_descr);
 
-  printk("gdt_descr[0](0x%x)",&cpu_gdt_descr[cpu]);
-  printk("idt_descr(0x%x)",&idt_descr);
+  //printk("gdt_descr[0](0x%x)",&cpu_gdt_descr[cpu]);
+  //printk("idt_descr(0x%x)",&idt_descr);
   
   //load_gdt(&cpu_gdt_descr[cpu]);
   /* __asm__ __volatile__("movl $0x60,%edx ; movl %edx,%cs"); */
@@ -50,7 +50,7 @@ void cpu_init(void){
   store_gdt(&ga);
   printk("GDT(desc) = 0x%x",ga);
   printk("IDT(desc) = 0x%x",ia);
-  printk("ia(0x%x)",&ia);
+  //printk("ia(0x%x)",&ia);
   //printk("esp0 = 0x%x",t->esp0);
   __asm__ __volatile__("xorl %eax, %eax; movl %eax, %fs; movl %eax, %gs");
 }

@@ -22,4 +22,6 @@ typedef struct { unsigned long pgprot; } pgprot_t;
 #define __PHYSICAL_START        (0x00100000)
 #define PAGE_OFFSET		((unsigned long)__PAGE_OFFSET)
 
+#define virt_to_page(kaddr) pfn_to_page(kaddr >> PAGE_SHIFT)
+
 #endif

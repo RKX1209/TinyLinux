@@ -6,7 +6,7 @@
 #ifndef _ABYON_BOOTMEM_H
 #define _ABYON_BOOTMEM_H
 
-#include <abyon/mmzone.h>
+#include <abyon/mm.h>
 
 #include <asm/pgtable.h>
 
@@ -26,6 +26,7 @@ typedef struct bootmem_data{
 } bootmem_data_t;
 
 bootmem_data_t bdata;
+extern unsigned long free_all_bootmem_node(pg_data_t *pgdat);
 extern unsigned long init_bootmem (unsigned long addr, unsigned long memend);
 extern unsigned long init_bootmem_node (pg_data_t *pgdat, unsigned long freepfn,
 					unsigned long startpfn, unsigned long endpfn);

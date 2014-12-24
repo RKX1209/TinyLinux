@@ -6,6 +6,9 @@
 #ifndef _ABYON_LIST_H
 #define _ABYON_LIST_H
 
+#define LIST_POISON1  ((void *) 0x00100100)
+#define LIST_POISON2  ((void *) 0x00200200)
+
 struct list_head{
 struct list_head *next,*prev;
 };
@@ -37,6 +40,11 @@ static inline void __list_del(struct list_head * prev, struct list_head * next){
   prev->next = next;
 }
 
+static inline void list_del(struct list_head *entry){
+	__list_del(entry->prev, entry->next);
+	entry->next = LIST_POISON1;
+	entry->prev = LIST_POISON2;
+}
 static inline void list_add_tail(struct list_head *new, struct list_head *head){
   __list_add(new, head->prev, head);
 }

@@ -3,14 +3,17 @@
  * Copyright (C) <2014>  <@RKX1209>
  */
 #include <abyon/bootmem.h>
-#include <abyon/mmzone.h>
 #include <abyon/kernel.h>
 
 #include <asm/bitops.h>
 #include <asm/string.h>
 
+#define BITS_PER_LONG 32
+
 unsigned long max_low_pfn;
 unsigned long min_low_pfn;
+
+extern fastcall void __free_pages(struct page *page,unsigned int order);
 extern int find_next_zero_bit(const unsigned long *addr, int size, int offset);
 extern int printk(const char *fmt, ...);
 
@@ -133,6 +136,64 @@ void * __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long size,
 
   return ret;  
 }
+
+static unsigned long free_all_bootmem_core(pg_data_t *pgdat){
+  bootmem_data_t *bdata = pgdat->bdata;
+  unsigned long pfn = bdata->node_boot_start >> PAGE_SHIFT;
+  unsigned long idx = bdata->node_end_pfn - pfn;
+  unsigned long *map = bdata->node_bootmem_map;
+  unsigned long i,j,count = 0,total = 0,order;
+  struct page *page;
+  for(i = 0; i < idx; ){
+    unsigned long v = ~map[i / BITS_PER_LONG];
+    if(v == ~0UL){      
+      page = pfn_to_page(pfn);
+      count += BITS_PER_LONG;
+      __clear_bit(PG_reserved,&page->flags);
+      order = ffs(BITS_PER_LONG) - 1;
+      page->_count = 0;
+      for(j = 1; j < BITS_PER_LONG; j++){
+	if(j + 16 < BITS_PER_LONG);
+	__clear_bit(PG_reserved,&(page + j)->flags);
+	(page + j)->_count = 0;
+      }
+      __free_pages(page,order);
+      i += BITS_PER_LONG;
+      page += BITS_PER_LONG;
+    }else if(v){
+      page = pfn_to_page(pfn);
+      unsigned long m;
+      for(m = 1; m && i < idx; m <<= 1, page++,i++){
+	if(v & m){
+	  count++;
+	  __clear_bit(PG_reserved,&page->flags);
+	  page->_count = 0;
+	  __free_pages(page,0);
+	}
+      }
+    }else{
+      i += BITS_PER_LONG;
+    }
+    pfn += BITS_PER_LONG;
+  }
+  total += count;
+  page = virt_to_page((unsigned long)(bdata->node_bootmem_map));
+  count = 0;
+  for(i = 0; i < ((bdata->node_end_pfn - (bdata->node_boot_start >> PAGE_SHIFT)) / 8 + PAGE_SIZE - 1) / PAGE_SIZE; i++,page++){
+    count++;
+    __clear_bit(PG_reserved,&page->flags);
+    page->_count = 0;
+    __free_pages(page,order);
+  }
+  total += count;
+  bdata->node_bootmem_map = 0;
+  return total;
+}
+
+unsigned long free_all_bootmem_node(pg_data_t *pgdat){
+  return (free_all_bootmem_core(pgdat));
+}
+
 static void free_bootmem_core(bootmem_data_t *bdata,
 			      unsigned long addr, unsigned long size){
   /* bdata management range (index) */

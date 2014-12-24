@@ -90,7 +90,7 @@ extern pgd_t swapper_pg_dir[1024];
   ((unsigned long) (((ptedat).pte_low & 0xfffff000) + pte_index(addr)))
 
 /* Change physical address to virtual address (Straight map area) */
-#define pa_to_va(addr) ((void *)((unsigned long)(addr) + PAGE_OFFSET))
+#define pa_to_va(addr) (void *)((unsigned long)(addr))
 
 
 #define PFN_UP(x) (((x) + PAGE_SIZE-1) >> PAGE_SHIFT)

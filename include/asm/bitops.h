@@ -73,8 +73,7 @@ static inline void __set_bit(int nr, volatile unsigned long * addr) {
 		:"Ir" (nr));
 
 }
-static inline void __clear_bit(int nr, volatile unsigned long * addr)
-{
+static inline void __clear_bit(int nr, volatile unsigned long * addr){
 	__asm__ __volatile__(
 		"btrl %1,%0"
 		:"=m" (addr)
@@ -82,4 +81,14 @@ static inline void __clear_bit(int nr, volatile unsigned long * addr)
 }
 #define test_bit(nr,addr) \
   constant_test_bit((nr),(addr))
+
+static inline int ffs(int x){
+	int r;
+
+	__asm__("bsfl %1,%0\n\t"
+		"jnz 1f\n\t"
+		"movl $-1,%0\n"
+		"1:" : "=r" (r) : "rm" (x));
+	return r+1;
+}
 
