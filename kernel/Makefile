@@ -7,7 +7,8 @@
 		  $(ARCH_KERNEL_TIMERS)/timer_pit.o \
 		  $(ARCH_MM)/init.o \
 		  $(ARCH_LIB)/memcpy.o $(ARCH_LIB)/bitops.o \
-		  $(MM)/bootmem.o $(MM)/page_alloc.o \
+		  $(MM)/bootmem.o $(MM)/page_alloc.o $(MM)/slab.o \
+		  $(FS)/dcache.o $(FS)/inode.o \
 		  $(LIB)/vsprintf.o \
 		  $(DRIVERS_VRAM)/disp.o \
 		  $(ARCH_KERNEL)/tail.o
@@ -17,7 +18,7 @@ HOME_DIR	= ..
 #---Build Command---
 CC		= gcc
 #CFLAGS		= -I$(HOME_DIR)/include -Wall -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
-CFLAGS		= -I$(HOME_DIR)/include -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
+CFLAGS		= -O0 -I$(HOME_DIR)/include -fno-tree-scev-cprop -Wno-pointer-sign -fno-stack-protector
 LFLAGS		= -m elf_i386 --oformat binary -T $(LD_SCRIPT) -Map kernel.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 LFLAGS2		= -m elf_i386 -T $(LD_SCRIPT) -Map kernel_e.map -nostdlib -e $(KERNEL_ENTRY) -arch i386
 ASFLAGS		= -c -m32 -I$(HOME_DIR)/include
@@ -50,6 +51,10 @@ ARCH_LIB		= $(ARCH)/lib
 
 #---MM path-------------
 MM		= ../mm
+#-------------------------
+
+#---FS path-------------
+FS		= ../fs
 #-------------------------
 
 #---Lib path-------------
@@ -113,6 +118,12 @@ $(MM)/%.o : $(MM)/%.c Makefile
 
 $(MM)/%.o : $(MM)/%.S Makefile
 	$(CC) -o $(MM)/$*.o $(MM)/$*.S $(ASFLAGS)
+
+$(FS)/%.o : $(FS)/%.c Makefile
+	$(CC) -m32 -c -o $(FS)/$*.o $(FS)/$*.c $(CFLAGS)
+
+$(FS)/%.o : $(FS)/%.S Makefile
+	$(CC) -o $(FS)/$*.o $(FS)/$*.S $(ASFLAGS)
 
 $(LIB)/%.o : $(LIB)/%.c Makefile
 	$(CC) -m32 -c -o $(LIB)/$*.o $(LIB)/$*.c $(CFLAGS)

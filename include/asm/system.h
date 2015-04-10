@@ -57,5 +57,5 @@
 
 /* Enable Interupt (set IF = 1) */
 #define local_irq_enable() __asm__ __volatile__("sti": : :"memory")
-
+#define local_irq_save(x) __asm__ __volatile__("pushfl ; popl %0 ; cli":"=g" (x): /* no input */ :"memory")
 #endif

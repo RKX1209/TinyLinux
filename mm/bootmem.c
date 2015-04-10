@@ -144,18 +144,19 @@ static unsigned long free_all_bootmem_core(pg_data_t *pgdat){
   unsigned long *map = bdata->node_bootmem_map;
   unsigned long i,j,count = 0,total = 0,order;
   struct page *page;
+  printk("bootmem_fin: %d\n",idx);
   for(i = 0; i < idx; ){
     unsigned long v = ~map[i / BITS_PER_LONG];
-    if(v == ~0UL){      
+    if(v == ~0UL){
       page = pfn_to_page(pfn);
       count += BITS_PER_LONG;
       __clear_bit(PG_reserved,&page->flags);
       order = ffs(BITS_PER_LONG) - 1;
       page->_count = 0;
       for(j = 1; j < BITS_PER_LONG; j++){
-	if(j + 16 < BITS_PER_LONG);
-	__clear_bit(PG_reserved,&(page + j)->flags);
-	(page + j)->_count = 0;
+  	if(j + 16 < BITS_PER_LONG);
+  	__clear_bit(PG_reserved,&(page + j)->flags);
+  	(page + j)->_count = 0;
       }
       __free_pages(page,order);
       i += BITS_PER_LONG;
@@ -164,12 +165,12 @@ static unsigned long free_all_bootmem_core(pg_data_t *pgdat){
       page = pfn_to_page(pfn);
       unsigned long m;
       for(m = 1; m && i < idx; m <<= 1, page++,i++){
-	if(v & m){
-	  count++;
-	  __clear_bit(PG_reserved,&page->flags);
-	  page->_count = 0;
-	  __free_pages(page,0);
-	}
+  	if(v & m){
+  	  count++;
+  	  __clear_bit(PG_reserved,&page->flags);
+  	  page->_count = 0;
+  	  __free_pages(page,0);
+  	}
       }
     }else{
       i += BITS_PER_LONG;

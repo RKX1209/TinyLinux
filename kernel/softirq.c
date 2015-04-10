@@ -21,29 +21,29 @@ static DEFINE_PER_CPU(struct tasklet_head, tasklet_vec) = { 0 };
 static DEFINE_PER_CPU(struct tasklet_head, tasklet_hi_vec) = { 0 };
 
 static void tasklet_action(struct softirq_action *a){
-struct tasklet_struct *list = per_cpu(tasklet_vec,smp_processor_id()).list;
-per_cpu(tasklet_vec,smp_processor_id()).list = 0;
-while(list){
-struct tasklet_struct *t = list;
-list = list->next;
-t->func(t->data);
-}
+  struct tasklet_struct *list = per_cpu(tasklet_vec,smp_processor_id()).list;
+  per_cpu(tasklet_vec,smp_processor_id()).list = 0;
+  while(list){
+    struct tasklet_struct *t = list;
+    list = list->next;
+    t->func(t->data);
+  }
 }
 
 static void tasklet_hi_action(struct softirq_action *a){
-struct tasklet_struct *list = per_cpu(tasklet_hi_vec,smp_processor_id()).list;
-per_cpu(tasklet_hi_vec,smp_processor_id()).list = 0;
-while(list){
-struct tasklet_struct *t = list;
-list = list->next;
-t->func(t->data);
-}
+  struct tasklet_struct *list = per_cpu(tasklet_hi_vec,smp_processor_id()).list;
+  per_cpu(tasklet_hi_vec,smp_processor_id()).list = 0;
+  while(list){
+    struct tasklet_struct *t = list;
+    list = list->next;
+    t->func(t->data);
+  }
 }
 
 void softirq_init(void){
   open_softirq(TASKLET_SOFTIRQ,tasklet_action,0);
   open_softirq(HI_SOFTIRQ,tasklet_hi_action,0);
-printk("softirq_init... [OK]");
+  printk("softirq_init... [OK]");
 }
 
 void open_softirq(int nr,void (*action)(struct softirq_action*),void *data){

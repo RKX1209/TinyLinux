@@ -1,0 +1,1065 @@
+
+fs/dcache.c,286
+static unsigned int d_hash_mask;9,111
+static unsigned int d_hash_shift;10,144
+static struct hlist_head *dentry_hashtable;dentry_hashtable11,178
+static unsigned long dhash_entries;12,222
+void dcache_init_early(17,337
+void vfs_caches_init_early(32,728
+void vfs_caches_init(39,877
+
+fs/inode.c,219
+static unsigned int i_hash_mask;9,110
+static unsigned int i_hash_shift;10,143
+static struct hlist_head *inode_hashtable;inode_hashtable11,177
+static unsigned long ihash_entries;12,220
+void inode_init_early(14,257
+
+kernel/main.c,25
+void kernel_main(22,391
+
+kernel/printk.c,294
+#define __LOG_BUF_LEN	9,123
+#define __LOG_BUF_LIMIT 10,155
+char __log_buf[__log_buf12,183
+static int log_buf_lim 13,219
+static unsigned long log_start;15,262
+static unsigned long log_end;16,294
+#define LOG_BUF_MASK	19,354
+#define LOG_BUF(20,391
+int vprintk(24,531
+int printk(44,1090
+
+kernel/sched.c,70
+#define cpu_rq(18,332
+void sched_init(20,383
+void init_idle(43,948
+
+kernel/softirq.c,272
+static struct softirq_action softirq_vec[softirq_vec13,184
+struct tasklet_head{tasklet_head15,231
+  struct tasklet_struct *list;list16,252
+static void tasklet_action(23,476
+static void tasklet_hi_action(33,744
+void softirq_init(43,1021
+void open_softirq(49,1179
+
+kernel/timer.c,993
+#define TVN_BITS 16,270
+#define TVR_BITS 17,289
+#define TVN_SIZE 18,308
+#define TVR_SIZE 19,341
+#define TVN_MASK 20,374
+#define TVR_MASK 21,406
+unsigned long long jiffies 25,481
+typedef struct tvec_s{tvec_s26,524
+  struct list_head vec[vec27,547
+}tvec_t;tvec_t28,581
+typedef struct tvec_root_s{tvec_root_s30,591
+  struct list_head vec[vec31,619
+}tvec_root_t;tvec_root_t32,653
+typedef struct tvec_t_base_s{tvec_t_base_s34,668
+  unsigned long timer_jiffies;35,698
+  struct timer_list *running_timer;running_timer36,729
+  tvec_root_t tv1;37,765
+  tvec_t tv2;38,784
+  tvec_t tv3;39,798
+  tvec_t tv4;40,812
+  tvec_t tv5;41,826
+}tvec_base_t;tvec_base_t42,842
+static inline void detach_timer(46,906
+static void internal_add_timer(54,1116
+static void init_timer_cpu(85,2166
+static int cascade(100,2568
+#define INDEX(113,2916
+static void __run_timers(115,2996
+static int timer_cpu_notify(138,3785
+static void run_timer_softirq(150,3998
+void init_timers(155,4180
+
+lib/vsprintf.c,230
+#define ZEROPAD	10,151
+#define SIGN	11,190
+#define PLUS	12,233
+#define SPACE	13,265
+#define LEFT	14,302
+#define SPECIAL	15,340
+#define LARGE	16,369
+static char* number(19,444
+int vsnprintf(40,889
+int vscnprintf(105,2225
+
+mm/bootmem.c,501
+#define BITS_PER_LONG 11,162
+unsigned long max_low_pfn;13,188
+unsigned long min_low_pfn;14,215
+static unsigned long init_bootmem_core 20,438
+static void reserve_bootmem_core(40,1234
+void * __alloc_bootmem_core(53,1744
+static unsigned long free_all_bootmem_core(140,4431
+unsigned long free_all_bootmem_node(193,5984
+static void free_bootmem_core(197,6083
+unsigned long init_bootmem 217,6783
+unsigned long init_bootmem_node 222,6947
+void reserve_bootmem 227,7140
+void free_bootmem 232,7264
+
+mm/page_alloc.c,452
+struct pglist_data *pgdat_list;pgdat_list13,188
+struct zone *zone_table[zone_table14,220
+unsigned long nr_kernel_pages;16,260
+unsigned long nr_all_pages;17,291
+unsigned long nr_free_pages(19,320
+static inline int page_is_buddy(28,518
+static inline void __free_pages_bulk 36,710
+static int free_pages_bulk(58,1466
+void __free_pages_ok(71,1849
+fastcall void __free_pages(77,2012
+void *alloc_large_system_hash(alloc_large_system_hash84,2168
+
+include/abyon/bootmem.h,557
+#define _ABYON_BOOTMEM_H7,96
+typedef struct bootmem_data{bootmem_data20,293
+  unsigned long node_boot_start;21,322
+  unsigned long node_end_pfn;22,385
+  void *node_bootmem_map;node_bootmem_map23,415
+  unsigned long last_offset;24,484
+  unsigned long last_pos;25,513
+  unsigned long last_success;26,539
+} bootmem_data_t;27,569
+bootmem_data_t bdata;29,588
+#define alloc_bootmem(39,1155
+#define alloc_bootmem_low_pages(42,1235
+#define HASH_HIGHMEM	57,1657
+#define HASH_EARLY	58,1689
+static inline void *__alloc_bootmem __alloc_bootmem60,1720
+
+include/abyon/errno.h,449
+#define _ABYON_ERRNO_H8,93
+#define ERESTARTSYS	15,204
+#define ERESTARTNOINTR	16,228
+#define ERESTARTNOHAND	17,255
+#define ENOIOCTLCMD	18,312
+#define ERESTART_RESTARTBLOCK 19,359
+#define EBADHANDLE	22,476
+#define ENOTSYNC	23,529
+#define EBADCOOKIE	24,588
+#define ENOTSUPP	25,633
+#define ETOOSMALL	26,687
+#define ESERVERFAULT	27,746
+#define EBADTYPE	28,810
+#define EJUKEBOX	29,866
+#define EIOCBQUEUED	30,949
+#define EIOCBRETRY	31,1018
+
+include/abyon/init_task.h,85
+#define _ABYON_INIT_TASK_H7,100
+#define init_stack	13,207
+#define INIT_TSS 15,254
+
+include/abyon/interrupt.h,968
+#define _ABYON_INTERRUPT_H6,99
+#define IRQ_NONE	10,154
+#define IRQ_HANDLED	11,175
+#define SA_RESTART	13,200
+#define SA_SAMPLE_RANDOM 14,231
+#define SA_INTERRUPT	15,267
+#define SA_SHIRQ	16,300
+struct irqaction{irqaction18,329
+  int (*handler)handler19,347
+  unsigned long flags;20,394
+  const char *name;name21,417
+  void *dev_id;dev_id22,437
+  struct irqaction *next;next23,453
+  int irq;24,479
+  HI_SOFTIRQ=29,501
+  TIMER_SOFTIRQ,30,517
+  NET_TX_SOFTIRQ,31,534
+  NET_RX_SOFTIRQ,32,552
+  SCSI_SOFTIRQ,33,570
+  TASKLET_SOFTIRQ34,586
+struct softirq_action{softirq_action37,608
+  void (*action)action38,631
+  void *data;data39,674
+  TASKLET_STATE_SCHED,47,818
+  TASKLET_STATE_RUN	48,882
+struct tasklet_struct{tasklet_struct51,942
+  struct tasklet_struct *next;next52,965
+  unsigned long state;53,996
+  void (*func)func54,1019
+  unsigned long data;55,1050
+#define DECLARE_TASKLET(58,1076
+#define DECLARE_TASKLET_DISABLED(61,1174
+
+include/abyon/irq.h,1001
+#define _ABYON_IRQ_H6,87
+#define IRQ_INPROGRESS	13,187
+#define IRQ_DISABLED	14,253
+#define IRQ_PENDING	15,311
+#define IRQ_REPLAY	16,370
+#define IRQ_AUTODETECT	17,437
+#define IRQ_WAITING	18,495
+#define IRQ_LEVEL	19,561
+#define IRQ_MASKED	20,608
+struct hw_interrupt_type{hw_interrupt_type22,675
+  const char *typename;typename23,701
+  unsigned int (*startup)startup24,725
+  void (*shutdown)shutdown25,770
+  void (*enable)enable26,808
+  void (*disable)disable27,844
+  void (*ack)ack28,881
+  void (*end)end29,914
+  void (*set_affinity)set_affinity30,947
+typedef struct irq_desc{irq_desc33,1019
+  struct hw_interrupt_type *handler;handler34,1044
+  void *handler_data;handler_data35,1081
+struct irqaction *action;action36,1103
+  unsigned long status;37,1129
+  unsigned long depth;38,1153
+  unsigned long irq_count;39,1176
+  unsigned long irqs_unhandled;40,1203
+}irq_desc_t;irq_desc_t42,1238
+struct hw_interrupt_type no_irq_type;43,1251
+irq_desc_t irq_desc 44,1289
+
+include/abyon/jiffies.h,78
+#define _ABYON_JIFFIES_H8,97
+#define HZ 10,123
+#define INIT_JIFFIES 12,138
+
+include/abyon/kernel.h,192
+#define _LINUX_KERNEL_H8,95
+#define ALIGN(11,121
+#define fastcall 12,167
+#define offsetof(14,220
+#define container_of(16,291
+#define typecheck(20,464
+static inline int long_log2(26,577
+
+include/abyon/list.h,978
+#define _ABYON_LIST_H7,90
+#define LIST_POISON1 9,113
+#define LIST_POISON2 10,157
+struct list_head{list_head12,202
+struct list_head *next,next13,220
+struct list_head *next,*prev;prev13,220
+#define LIST_HEAD_INIT(16,254
+#define LIST_HEAD(18,305
+#define INIT_LIST_HEAD(21,378
+static inline void __list_add(25,474
+static inline void list_add(34,677
+static inline void __list_del(38,793
+static inline void list_del(43,919
+static inline void list_add_tail(48,1072
+static inline int list_empty(52,1193
+static inline void __list_splice(55,1284
+static inline void list_splice(68,1574
+static inline void list_splice_init(73,1710
+#define list_entry(81,1894
+struct hlist_head 84,1968
+	struct hlist_node *first;first85,1988
+struct hlist_node 88,2019
+	struct hlist_node *next,next89,2039
+	struct hlist_node *next, **pprev;pprev89,2039
+#define HLIST_HEAD_INIT 92,2078
+#define HLIST_HEAD(93,2117
+#define INIT_HLIST_HEAD(94,2183
+#define INIT_HLIST_NODE(95,2231
+
+include/abyon/mm.h,842
+#define _ABYON_MM_H6,85
+struct page{page11,157
+  unsigned long flags;12,170
+  unsigned long _count;14,196
+unsigned long private;15,220
+  struct list_head lru;16,243
+#define PG_locked	19,271
+#define PG_error	20,329
+#define PG_referenced	21,350
+#define PG_uptodate	22,376
+#define PG_dirty	24,401
+#define PG_lru	25,423
+#define PG_active	26,443
+#define PG_slab	27,465
+#define PG_checked	29,525
+#define PG_arch_1	30,578
+#define PG_reserved	31,600
+#define PG_private	32,624
+#define PG_writeback	34,681
+#define PG_nosave	35,736
+#define PG_compound	36,795
+#define PG_swapcache	37,849
+#define PG_mappedtodisk	39,915
+#define PG_reclaim	40,978
+#define PG_nosave_free	41,1028
+#define PG_uncached	42,1089
+#define ZONETABLE_PGSHIFT	44,1153
+#define ZONETABLE_MASK	45,1199
+static inline struct zone *page_zone(page_zone48,1297
+
+include/abyon/mmzone.h,1201
+#define _ABYON_MMZONE_H6,93
+#define MAX_ORDER 9,119
+#define ZONE_DMA	11,141
+#define ZONE_NORMAL	12,161
+#define ZONE_HIGHMEM	13,184
+#define MAX_NR_ZONES	15,209
+#define ZONES_SHIFT	16,266
+struct free_area 20,343
+  struct list_head	free_list;21,362
+  unsigned long		nr_free;22,392
+struct zone{zone25,422
+  unsigned long free_pages;26,435
+  struct pglist_data *zone_pgdat;zone_pgdat27,463
+  unsigned long pages_scanned;28,497
+  int all_unreclaimable;29,528
+  struct free_area free_area[free_area30,553
+  struct page *zone_mem_map;zone_mem_map31,594
+  unsigned long zone_start_pfn;32,623
+typedef struct pglist_data{pglist_data35,659
+  struct zone node_zones[node_zones36,687
+  int nr_zones;37,727
+  struct page *node_mem_map;node_mem_map38,743
+  int node_id;39,772
+  struct bootmem_data *bdata;bdata40,787
+  unsigned long node_start_pfn;41,837
+  struct pglist_data *pgdat_next;pgdat_next42,869
+}pg_data_t;pg_data_t43,903
+struct pglist_data node_data[node_data46,955
+#define NODE_DATA(47,1023
+static inline struct zone *next_zone(next_zone49,1065
+#define node_localnr(56,1238
+#define node_mem_map(57,1309
+#define page_to_pfn(59,1367
+#define pfn_to_page(65,1580
+
+include/abyon/notifier.h,854
+#define _ABYON_NOTIFIER_H8,99
+#define NOTIFY_DONE	10,126
+#define NOTIFY_OK	11,172
+#define NOTIFY_STOP_MASK	12,214
+#define NOTIFY_BAD	13,272
+#define NOTIFY_STOP	14,340
+#define NETDEV_UP	16,391
+#define NETDEV_DOWN	17,462
+#define NETDEV_REBOOT	18,489
+#define NETDEV_CHANGE	22,679
+#define NETDEV_REGISTER 23,741
+#define NETDEV_UNREGISTER	24,772
+#define NETDEV_CHANGEMTU	25,805
+#define NETDEV_CHANGEADDR	26,837
+#define NETDEV_GOING_DOWN	27,870
+#define NETDEV_CHANGENAME	28,903
+#define NETDEV_FEAT_CHANGE	29,936
+#define SYS_DOWN	31,971
+#define SYS_RESTART	32,1023
+#define SYS_HALT	33,1052
+#define SYS_POWER_OFF	34,1104
+#define NETLINK_URELEASE	36,1167
+#define CPU_ONLINE	38,1238
+#define CPU_UP_PREPARE	39,1293
+#define CPU_UP_CANCELED	40,1356
+#define CPU_DOWN_PREPARE	41,1424
+#define CPU_DOWN_FAILED	42,1489
+#define CPU_DEAD	43,1558
+
+include/abyon/percpu.h,29
+#define _ABYON_PERCPU_H7,94
+
+include/abyon/ptrace.h,29
+#define _ABYON_PTRACE_H8,95
+
+include/abyon/sched.h,1597
+#define _ABYON_SCHED_H6,91
+#define MAX_USER_RT_PRIO	16,275
+#define MAX_RT_PRIO	17,304
+#define MAX_PRIO	19,343
+#define TASK_RUNNING	21,381
+#define TASK_INTERRUPTIBLE	22,405
+#define TASK_UNINTERRUPTIBLE	23,434
+#define TASK_STOPPED	24,465
+#define TASK_TRACED	25,489
+#define EXIT_ZOMBIE	27,537
+#define EXIT_DEAD	28,561
+#define SCHED_NORMAL	30,584
+#define SCHED_FIFO	31,608
+#define SCHED_RR	32,630
+#define BITMAP_SIZE 33,650
+typedef struct task_struct task_t;36,731
+typedef struct prio_array 41,844
+  unsigned long nr_active;42,872
+  unsigned long bitmap[bitmap43,899
+  struct list_head queue[queue44,936
+} prio_array_t;45,972
+typedef struct runqueue{runqueue47,989
+  unsigned long nr_runnning;48,1014
+  prio_array_t *active,active49,1043
+  prio_array_t *active,*expired,expired49,1043
+  prio_array_t *active,*expired,arrays[arrays49,1043
+  task_t *curr,curr50,1086
+  task_t *curr,*idle;idle50,1086
+  int best_expired_prio;51,1108
+}runqueue_t;runqueue_t53,1136
+struct mm_struct{mm_struct55,1150
+  unsigned long mm_count;56,1168
+  pgd_t *pgd;pgd57,1194
+struct task_struct{task_struct60,1212
+  long state;61,1232
+  struct thread_info *thread_info;thread_info62,1246
+  unsigned long flags;63,1281
+  unsigned long ptrace;64,1304
+  int prio,65,1328
+  int prio,static_prio;65,1328
+  struct list_head run_list;66,1352
+  prio_array_t *array;array67,1381
+  unsigned long policy;68,1404
+  struct mm_struct *mm,mm69,1428
+  struct mm_struct *mm,*active_mm;active_mm69,1428
+  struct thread_struct thread;70,1463
+static inline void set_task_cpu(73,1498
+
+include/abyon/signal.h,29
+#define _ABYON_SIGNAL_H6,92
+
+include/abyon/thread_info.h,65
+#define _ABYON_THREAD_INFO_H7,104
+#define preempt_count(10,163
+
+include/abyon/threads.h,76
+#define __ASM_THREADS_H7,95
+#define NR_CRUS 9,120
+#define PID_MAX 11,139
+
+include/abyon/timer.h,225
+#define _ABYON_TIMER_H8,93
+struct timer_list{timer_list11,138
+struct list_head entry;12,157
+unsigned long expires;13,181
+void (*function)function14,204
+unsigned long data;15,237
+struct timer_base_s *base;base16,257
+
+include/asm-generic/div64.h,171
+#define _ASM_GENERIC_DIV64_H7,105
+#define do_div(9,135
+unsigned long long __udivmoddi4(17,370
+unsigned long long __udivdi3(40,777
+unsigned long long __umoddi3(43,893
+
+include/asm/bitops.h,298
+static inline int test_and_set_bit(5,67
+static int test_and_clear_bit(22,521
+static inline int find_first_zero_bit(35,903
+static int constant_test_bit(59,1415
+static inline void __set_bit(68,1677
+static inline void __clear_bit(76,1806
+#define test_bit(82,1947
+static inline int ffs(85,2009
+
+include/asm/current.h,118
+#define _I386_CURRENT_H2,24
+static inline struct task_struct *get_current(get_current7,101
+#define current 10,194
+
+include/asm/desc.h,570
+#define __ASM_DESC_H7,87
+#define get_cpu_gdt_table(19,356
+struct Xgt_desc_struct{Xgt_desc_struct21,405
+  unsigned short size;22,429
+  unsigned long address 23,452
+  unsigned short pad;24,501
+#define load_TR_desc(29,610
+#define load_LDT_desc(30,688
+#define load_gdt(32,769
+#define load_idt(33,835
+#define load_tr(34,901
+#define load_ldt(35,963
+#define store_gdt(37,1030
+#define store_idt(38,1097
+#define store_tr(39,1164
+#define store_ldt(40,1227
+#define _set_tssldt_desc(42,1295
+static inline void __set_tss_desc(54,1604
+#define set_tss_desc(58,1818
+
+include/asm/dma.h,56
+#define _ASM_DMA_H7,84
+#define MAX_DMA_ADDRESS 10,126
+
+include/asm/e820.h,366
+#define __E820_HEADER8,89
+#define E820MAX	10,112
+#define E820_RAM	12,133
+#define E820_RESERVED	13,152
+#define E820_ACPI	14,176
+#define E820_NVS	15,196
+struct e820map 19,258
+    int nr_map;20,275
+    struct e820entry 21,291
+	unsigned long addr;22,314
+	unsigned long size;23,365
+	unsigned long type;24,415
+    } map[map25,466
+struct e820map e820;29,491
+
+include/asm/errno.h,3384
+#define _ASM_ERRNO_H7,88
+#define	EPERM	9,110
+#define	ENOENT	10,158
+#define	ESRCH	11,209
+#define	EINTR	12,249
+#define	EIO	13,297
+#define	ENXIO	14,329
+#define	E2BIG	15,379
+#define	ENOEXEC	16,426
+#define	EBADF	17,470
+#define	ECHILD	18,510
+#define	EAGAIN	19,554
+#define	ENOMEM	20,589
+#define	EACCES	21,628
+#define	EFAULT	22,671
+#define	ENOTBLK	23,708
+#define	EBUSY	24,756
+#define	EEXIST	25,804
+#define	EXDEV	26,841
+#define	ENODEV	27,883
+#define	ENOTDIR	28,923
+#define	EISDIR	29,965
+#define	EINVAL	30,1005
+#define	ENFILE	31,1047
+#define	EMFILE	32,1092
+#define	ENOTTY	33,1137
+#define	ETXTBSY	34,1179
+#define	EFBIG	35,1220
+#define	ENOSPC	36,1259
+#define	ESPIPE	37,1308
+#define	EROFS	38,1346
+#define	EMLINK	39,1392
+#define	EPIPE	40,1432
+#define	EDOM	41,1468
+#define	ERANGE	42,1527
+#define	EDEADLK	43,1582
+#define	ENAMETOOLONG	44,1638
+#define	ENOLCK	45,1687
+#define	ENOSYS	46,1738
+#define	ENOTEMPTY	47,1788
+#define	ELOOP	48,1835
+#define	EWOULDBLOCK	49,1895
+#define	ENOMSG	50,1950
+#define	EIDRM	51,2002
+#define	ECHRNG	52,2045
+#define	EL2NSYNC	53,2098
+#define	EL3HLT	54,2149
+#define	EL3RST	55,2189
+#define	ELNRNG	56,2228
+#define	EUNATCH	57,2278
+#define	ENOCSI	58,2333
+#define	EL2HLT	59,2385
+#define	EBADE	60,2425
+#define	EBADR	61,2466
+#define	EXFULL	62,2517
+#define	ENOANO	63,2556
+#define	EBADRQC	64,2590
+#define	EBADSLT	65,2637
+#define	EDEADLOCK	67,2677
+#define	EBFONT	69,2704
+#define	ENOSTR	70,2750
+#define	ENODATA	71,2795
+#define	ETIME	72,2839
+#define	ENOSR	73,2877
+#define	ENONET	74,2926
+#define	ENOPKG	75,2981
+#define	EREMOTE	76,3028
+#define	ENOLINK	77,3071
+#define	EADV	78,3119
+#define	ESRMNT	79,3158
+#define	ECOMM	80,3197
+#define	EPROTO	81,3249
+#define	EMULTIHOP	82,3289
+#define	EDOTDOT	83,3335
+#define	EBADMSG	84,3380
+#define	EOVERFLOW	85,3425
+#define	ENOTUNIQ	86,3490
+#define	EBADFD	87,3543
+#define	EREMCHG	88,3597
+#define	ELIBACC	89,3646
+#define	ELIBBAD	90,3711
+#define	ELIBSCN	91,3774
+#define	ELIBMAX	92,3832
+#define	ELIBEXEC	93,3906
+#define	EILSEQ	94,3970
+#define	ERESTART	95,4017
+#define	ESTRPIPE	96,4087
+#define	EUSERS	97,4132
+#define	ENOTSOCK	98,4172
+#define	EDESTADDRREQ	99,4229
+#define	EMSGSIZE	100,4288
+#define	EPROTOTYPE	101,4331
+#define	ENOPROTOOPT	102,4390
+#define	EPROTONOSUPPORT	103,4442
+#define	ESOCKTNOSUPPORT	104,4498
+#define	EOPNOTSUPP	105,4557
+#define	EPFNOSUPPORT	106,4631
+#define	EAFNOSUPPORT	107,4691
+#define	EADDRINUSE	108,4762
+#define	EADDRNOTAVAIL	109,4813
+#define	ENETDOWN	110,4876
+#define	ENETUNREACH	111,4919
+#define	ENETRESET	112,4972
+#define	ECONNABORTED	113,5044
+#define	ECONNRESET	114,5108
+#define	ENOBUFS	115,5162
+#define	EISCONN	116,5215
+#define	ENOTCONN	117,5282
+#define	ESHUTDOWN	118,5345
+#define	ETOOMANYREFS	119,5419
+#define	ETIMEDOUT	120,5485
+#define	ECONNREFUSED	121,5534
+#define	EHOSTDOWN	122,5584
+#define	EHOSTUNREACH	123,5625
+#define	EALREADY	124,5673
+#define	EINPROGRESS	125,5730
+#define	ESTALE	126,5786
+#define	EUCLEAN	127,5834
+#define	ENOTNAM	128,5886
+#define	ENAVAIL	129,5941
+#define	EISNAM	130,5998
+#define	EREMOTEIO	131,6045
+#define	EDQUOT	132,6090
+#define	ENOMEDIUM	134,6132
+#define	EMEDIUMTYPE	135,6176
+#define	ECANCELED	136,6224
+#define	ENOKEY	137,6271
+#define	EKEYEXPIRED	138,6324
+#define	EKEYREVOKED	139,6370
+#define	EKEYREJECTED	140,6421
+#define	EOWNERDEAD	143,6506
+#define	ENOTRECOVERABLE	144,6546
+
+include/asm/fixmap.h,960
+#define _ASM_FIXMAP_H7,90
+#define __FIXADDR_TOP	11,136
+enum fixed_addresses 13,170
+  FIX_HOLE,14,193
+  FIX_VSYSCALL,15,205
+  FIX_APIC_BASE,16,221
+  FIX_IO_APIC_BASE_0,17,289
+  FIX_IO_APIC_BASE_END 18,311
+  FIX_IO_APIC_BASE_END = FIX_IO_APIC_BASE_0,18,311
+  FIX_CO_CPU,19,376
+  FIX_CO_APIC,20,409
+  FIX_LI_PCIA,21,461
+  FIX_LI_PCIB,22,503
+  FIX_F00F_IDT,23,545
+  FIX_CYCLONE_TIMER,24,591
+  FIX_KMAP_BEGIN,25,639
+  FIX_KMAP_END,26,708
+  FIX_ACPI_BEGIN,27,767
+  FIX_ACPI_END,28,785
+  FIX_PCIE_MCFG,29,842
+  __end_of_permanent_fixed_addresses,30,859
+#define NR_FIX_BTMAPS	32,971
+  FIX_BTMAP_END 33,996
+  FIX_BTMAP_END = __end_of_permanent_fixed_addresses,33,996
+  FIX_BTMAP_BEGIN 34,1050
+  FIX_BTMAP_BEGIN = FIX_BTMAP_END 34,1050
+  FIX_BTMAP_BEGIN = FIX_BTMAP_END + NR_FIX_BTMAPS 34,1050
+  FIX_WP_TEST,35,1105
+  __end_of_fixed_addresses36,1120
+#define FIXADDR_TOP	39,1151
+#define __fix_to_virt(42,1248
+#define __virt_to_fix(43,1309
+
+include/asm/highmem.h,82
+#define _ASM_HIGHMEM_H7,92
+#define LAST_PKMAP 13,190
+#define PKMAP_BASE 15,215
+
+include/asm/hw_irq.h,30
+#define __ASM_HW_IRQ_H__6,92
+
+include/asm/i8259.h,157
+#define __ASM_I8259_H__6,90
+unsigned int cached_irq_mask 8,115
+#define __byte(10,155
+#define cached_master_mask	13,330
+#define cached_slave_mask	14,362
+
+include/asm/io.h,80
+#define __ASM_IO_H__7,85
+static inline void outb(9,107
+#define outb_p 13,234
+
+include/asm/io_ports.h,450
+#define _ASM_IO_PORTS_H6,93
+#define PIT_MODE	9,145
+#define PIT_CH0	10,168
+#define PIT_CH2	11,191
+#define PIC_MASTER_CMD	14,242
+#define PIC_MASTER_IMR	15,271
+#define PIC_MASTER_ISR	16,300
+#define PIC_MASTER_POLL	17,339
+#define PIC_MASTER_OCW3	18,379
+#define PIC_SLAVE_CMD	19,419
+#define PIC_SLAVE_IMR	20,447
+#define PIC_CASCADE_IR	23,507
+#define MASTER_ICW4_DEFAULT	24,533
+#define SLAVE_ICW4_DEFAULT	25,566
+#define PIC_ICW4_AEOI	26,598
+
+include/asm/irq.h,22
+#define NR_IRQS 6,65
+
+include/asm/irq_vectors.h,178
+#define _ASM_IRQ_VECTORS_H7,100
+#define FIRST_EXTERNAL_VECTOR	9,128
+#define SYSCALL_VECTOR	10,163
+#define TIMER_IRQ 12,193
+#define NR_VECTORS 13,213
+#define FPU_IRQ	15,237
+
+include/asm/page.h,527
+#define _I386_PAGE_H7,87
+#define PAGE_SHIFT	10,129
+#define PAGE_SIZE	11,151
+#define PAGE_MASK 12,189
+typedef struct { unsigned long pte_low;15,259
+typedef struct { unsigned long pte_low; } pte_t;15,259
+typedef struct { unsigned long pgd;16,308
+typedef struct { unsigned long pgd; } pgd_t;16,308
+typedef struct { unsigned long pgprot;17,353
+typedef struct { unsigned long pgprot; } pgprot_t;17,353
+#define __PAGE_OFFSET	21,433
+#define __PHYSICAL_START 22,469
+#define PAGE_OFFSET	23,514
+#define virt_to_page(25,567
+
+include/asm/percpu.h,143
+#define _ASM_PERCPU_H7,90
+#define DEFINE_PER_CPU(9,113
+#define per_cpu(11,184
+#define __get_cpu_var(12,242
+#define DECLARE_PER_CPU(13,284
+
+include/asm/pgtable.h,1297
+#define _I386_PGTABLE_H7,93
+#define PTRS_PER_PGD 16,231
+#define PTRS_PER_PTE 17,279
+#define PGDIR_SHIFT 20,357
+#define PGDIR_SIZE 21,380
+#define PGDIR_MASK 22,421
+#define pgd_index(25,503
+#define pgd_offset(28,589
+#define pgd_offset_k(29,647
+#define PTE_SHIFT32,718
+#define pte_index(33,736
+#define _PAGE_PRESENT	36,844
+#define _PAGE_RW	37,872
+#define _PAGE_USER	38,895
+#define _PAGE_PWT	39,920
+#define _PAGE_PCD	40,944
+#define _PAGE_ACCESSED	41,968
+#define _PAGE_DIRTY	42,997
+#define _PAGE_PSE	43,1023
+#define _PAGE_GLOBAL	44,1047
+#define _PAGE_UNUSED1	45,1074
+#define _PAGE_UNUSED2	46,1102
+#define _PAGE_UNUSED3	47,1130
+#define _PAGE_FILE	49,1159
+#define _PAGE_PROTNONE	50,1185
+#define _PAGE_NX	51,1215
+#define _PAGE_TABLE	53,1235
+#define _PAGE_SHARED 55,1327
+#define _PAGE_SHARED_EXEC 58,1409
+#define _PAGE_KERNEL 61,1496
+#define _PAGE_KERNEL_EXEC 63,1590
+#define PAGE_SHARED 66,1679
+#define PAGE_SHARED_EXEC 67,1724
+#define PAGE_KERNEL 68,1779
+#define PAGE_KERNEL_EXEC 69,1824
+#define pfn_pte(72,1936
+#define pte_pfn(73,2007
+#define pgd_none(75,2074
+#define pte_virtual_addr(77,2110
+#define pgd_pa_addr(86,2483
+#define pte_pa_addr(89,2584
+#define pa_to_va(93,2761
+#define PFN_UP(96,2818
+#define PFN_DOWN(97,2872
+static inline void set_pte(103,3023
+
+include/asm/processor.h,2706
+#define __ASM_I386_PROCESSOR_H7,102
+struct desc_struct 14,211
+  unsigned long a,15,232
+  unsigned long a,b;15,232
+#define IO_BITMAP_BITS 20,304
+#define IO_BITMAP_BYTES 21,334
+#define IO_BITMAP_LONGS 22,377
+#define IO_BITMAP_OFFSET 23,432
+#define INVALID_IO_BITMAP_OFFSET 24,495
+#define INVALID_IO_BITMAP_OFFSET_LAZY 25,535
+struct tss_struct 27,581
+  unsigned short back_link,28,601
+  unsigned short back_link,__blh;28,601
+  unsigned long	esp0;29,635
+  unsigned short ss0,30,657
+  unsigned short ss0,__ss0h;30,657
+  unsigned long	esp1;31,686
+  unsigned short ss1,32,708
+  unsigned short ss1,__ss1h;32,708
+  unsigned long	esp2;33,785
+  unsigned short ss2,34,807
+  unsigned short ss2,__ss2h;34,807
+  unsigned long	__cr3;35,836
+  unsigned long	eip;36,859
+  unsigned long	eflags;37,880
+  unsigned long	eax,38,904
+  unsigned long	eax,ecx,38,904
+  unsigned long	eax,ecx,edx,38,904
+  unsigned long	eax,ecx,edx,ebx;38,904
+  unsigned long	esp;39,937
+  unsigned long	ebp;40,958
+  unsigned long	esi;41,979
+  unsigned long	edi;42,1000
+  unsigned short es,43,1021
+  unsigned short es, __esh;43,1021
+  unsigned short cs,44,1049
+  unsigned short cs, __csh;44,1049
+  unsigned short ss,45,1077
+  unsigned short ss, __ssh;45,1077
+  unsigned short ds,46,1105
+  unsigned short ds, __dsh;46,1105
+  unsigned short fs,47,1133
+  unsigned short fs, __fsh;47,1133
+  unsigned short gs,48,1161
+  unsigned short gs, __gsh;48,1161
+  unsigned short ldt,49,1189
+  unsigned short ldt, __ldth;49,1189
+  unsigned short trace,50,1219
+  unsigned short trace, io_bitmap_base;50,1219
+  unsigned long	io_bitmap[io_bitmap51,1259
+  unsigned long io_bitmap_max;52,1307
+  struct thread_struct *io_bitmap_owner;io_bitmap_owner53,1338
+  unsigned long __cacheline_filler[__cacheline_filler54,1379
+  unsigned long stack[stack55,1419
+struct thread_struct 58,1474
+  struct desc_struct tls_array[tls_array59,1497
+  unsigned long	esp0;60,1552
+  unsigned long	sysenter_cs;61,1574
+  unsigned long	eip;62,1603
+  unsigned long	esp;63,1624
+  unsigned long	fs;64,1645
+  unsigned long	gs;65,1665
+  unsigned long	debugreg[debugreg66,1685
+  unsigned long	cr2,67,1745
+  unsigned long	cr2, trap_no,67,1745
+  unsigned long	cr2, trap_no, error_code;67,1745
+  unsigned long		screen_bitmap;68,1787
+  unsigned long		v86flags,69,1819
+  unsigned long		v86flags, v86mask,69,1819
+  unsigned long		v86flags, v86mask, saved_esp0;69,1819
+  unsigned int		saved_fs,70,1867
+  unsigned int		saved_fs, saved_gs;70,1867
+  unsigned long	*io_bitmap_ptr;io_bitmap_ptr71,1903
+  unsigned long	iopl;72,1935
+  unsigned long	io_bitmap_max;73,1957
+#define INIT_THREAD 76,1992
+static inline void load_esp0(80,2057
+
+include/asm/ptrace.h,710
+#define _I386_PTRACE_H7,91
+#define EBX 9,115
+#define ECX 10,129
+#define EDX 11,143
+#define ESI 12,157
+#define EDI 13,171
+#define EBP 14,185
+#define EAX 15,199
+#define DS 16,213
+#define ES 17,226
+#define FS 18,239
+#define GS 19,252
+#define ORIG_EAX 20,266
+#define EIP 21,286
+#define CS 22,301
+#define EFL 23,316
+#define UESP 24,331
+#define SS 25,347
+#define FRAME_SIZE 26,363
+struct pt_regs 28,386
+  long ebx;29,403
+  long ecx;30,415
+  long edx;31,427
+  long esi;32,439
+  long edi;33,451
+  long ebp;34,463
+  long eax;35,475
+  int  xds;36,487
+  int  xes;37,499
+  long orig_eax;38,511
+  long eip;39,528
+  int  xcs;40,540
+  long eflags;41,552
+  long esp;42,567
+  int  xss;43,579
+
+include/asm/segment.h,934
+#define _ASM_SEGMENT_H8,93
+#define GDT_ENTRY_TLS_ENTRIES	55,1093
+#define GDT_ENTRY_TLS_MIN	56,1125
+#define GDT_ENTRY_TLS_MAX 57,1153
+#define TLS_SIZE 59,1229
+#define GDT_ENTRY_DEFAULT_USER_CS	62,1304
+#define __USER_CS 63,1351
+#define GDT_ENTRY_DEFAULT_USER_DS	65,1406
+#define __USER_DS 66,1453
+#define GDT_ENTRY_KERNEL_BASE 69,1539
+#define GDT_ENTRY_KERNEL_CS 71,1573
+#define __KERNEL_CS 72,1640
+#define GDT_ENTRY_KERNEL_DS 74,1687
+#define __KERNEL_DS 75,1754
+#define GDT_ENTRY_TSS	77,1801
+#define GDT_ENTRY_LDT	78,1853
+#define GDT_ENTRY_PNPBIOS_BASE	80,1906
+#define GDT_ENTRY_APMBIOS_BASE	81,1966
+#define GDT_ENTRY_ESPFIX_SS	83,2028
+#define __ESPFIX_SS 84,2086
+#define GDT_ENTRY_DOUBLEFAULT_TSS	86,2133
+#define GDT_ENTRIES 89,2186
+#define GDT_SIZE 90,2209
+#define GDT_ENTRY_BOOT_CS	93,2294
+#define __BOOT_CS	94,2323
+#define GDT_ENTRY_BOOT_DS	96,2366
+#define __BOOT_DS	97,2417
+#define IDT_ENTRIES 100,2475
+
+include/asm/signal.h,930
+#define _ASM_SIGNAL_H6,89
+#define _NSIG	8,112
+#define NSIG	9,130
+#define SIGHUP	11,148
+#define SIGINT	12,167
+#define SIGQUIT	13,186
+#define SIGILL	14,206
+#define SIGTRAP	15,225
+#define SIGABRT	16,245
+#define SIGIOT	17,265
+#define SIGBUS	18,284
+#define SIGFPE	19,303
+#define SIGKILL	20,322
+#define SIGUSR1	21,342
+#define SIGSEGV	22,362
+#define SIGUSR2	23,382
+#define SIGPIPE	24,402
+#define SIGALRM	25,422
+#define SIGTERM	26,442
+#define SIGSTKFLT	27,462
+#define SIGCHLD	28,483
+#define SIGCONT	29,503
+#define SIGSTOP	30,523
+#define SIGTSTP	31,543
+#define SIGTTIN	32,563
+#define SIGTTOU	33,583
+#define SIGURG	34,603
+#define SIGXCPU	35,622
+#define SIGXFSZ	36,642
+#define SIGVTALRM	37,662
+#define SIGPROF	38,683
+#define SIGWINCH	39,703
+#define SIGIO	40,723
+#define SIGPOLL	41,741
+#define SIGPWR	45,790
+#define SIGSYS	46,809
+#define	SIGUNUSED	47,828
+#define SIGRTMIN	50,913
+#define SIGRTMAX	51,933
+
+include/asm/smp.h,57
+#define _ASM_SMP_H7,84
+#define smp_processor_id(10,129
+
+include/asm/string.h,187
+#define _ASM_STRING_H7,90
+static inline void *__memcpy(__memcpy9,113
+static inline void * __memset_generic(21,410
+static inline unsigned long strnlen(32,618
+#define __memset(51,968
+
+include/asm/system.h,312
+#define __ASM_SYSTEM_H7,93
+#define read_cr0(10,153
+#define write_cr0(18,285
+#define read_cr2(21,359
+#define write_cr2(29,491
+#define read_cr3(32,565
+#define write_cr3(40,697
+#define read_cr4(43,771
+#define write_cr4(51,903
+#define wmb(55,1004
+#define smp_wmb(56,1050
+#define local_irq_enable(59,1110
+
+include/asm/thread_info.h,1356
+#define _ASM_THREAD_INFO_H7,100
+#define THREAD_SIZE 10,129
+struct thread_info{thread_info14,177
+  struct task_struct *task;task15,197
+  struct exec_domain *exec_domain;exec_domain16,225
+  unsigned long flags;17,260
+  unsigned long status;18,283
+  unsigned long cpu;19,307
+  int preempt_count;20,328
+  unsigned long addr_limit;21,349
+union thread_union{thread_union25,384
+  struct thread_info thread_info;26,404
+#define init_thread_info	31,494
+#define init_stack	32,551
+static inline struct thread_info *current_thread_info(current_thread_info34,598
+#define GET_THREAD_INFO(41,775
+#define TIF_SYSCALL_TRACE	47,859
+#define TIF_NOTIFY_RESUME	48,914
+#define TIF_SIGPENDING	49,982
+#define TIF_NEED_RESCHED	50,1029
+#define TIF_SINGLESTEP	51,1085
+#define TIF_IRET	52,1159
+#define TIF_SYSCALL_EMU	53,1202
+#define TIF_SYSCALL_AUDIT	54,1260
+#define TIF_SECCOMP	55,1318
+#define TIF_POLLING_NRFLAG	56,1364
+#define TIF_MEMDIE	57,1448
+#define _TIF_SYSCALL_TRACE	59,1472
+#define _TIF_NOTIFY_RESUME	60,1522
+#define _TIF_SIGPENDING	61,1572
+#define _TIF_NEED_RESCHED	62,1617
+#define _TIF_SINGLESTEP	63,1665
+#define _TIF_IRET	64,1710
+#define _TIF_SYSCALL_EMU	65,1743
+#define _TIF_SYSCALL_AUDIT	66,1789
+#define _TIF_SECCOMP	67,1839
+#define _TIF_POLLING_NRFLAG	68,1878
+#define _TIF_WORK_MASK 71,1978
+#define INIT_THREAD_INFO(75,2114
+
+include/asm/tlbflush.h,91
+#define _I386_TLBFLUSH_H7,95
+#define __flush_tlb(11,149
+# define __flush_tlb_all(22,409
+
+include/drivers/disp.h,445
+#define COL8_000000	8,93
+#define COL8_FF0000	9,116
+#define COL8_00FF00	10,139
+#define COL8_FFFF00	11,162
+#define COL8_0000FF	12,185
+#define COL8_FF00FF	13,208
+#define COL8_00FFFF	14,231
+#define COL8_FFFFFF	15,254
+#define COL8_C6C6C6	16,277
+#define COL8_840000	17,300
+#define COL8_008400	18,323
+#define COL8_848400	19,347
+#define COL8_000084	20,371
+#define COL8_840084	21,395
+#define COL8_008484	22,419
+#define COL8_848484	23,443

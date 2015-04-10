@@ -1,21 +1,3 @@
-/*
- * include/abyon/mm.h
- * Copyright (C) <2014>  <@RKX1209>
- */
-#ifndef _ABYON_MM_H
-#define _ABYON_MM_H
-
-#include <abyon/list.h>
-#include <abyon/mmzone.h>
-
-struct page{
-  unsigned long flags;
-  
-  unsigned long _count;
-  unsigned long private;
-  struct list_head lru;
-};
-
 #define PG_locked	 	 0	/* Page is locked. Don't touch. */
 #define PG_error		 1
 #define PG_referenced		 2
@@ -41,11 +23,4 @@ struct page{
 #define PG_nosave_free		18	/* Free, should not be written */
 #define PG_uncached		19	/* Page has been mapped as uncached */
 
-#define ZONETABLE_PGSHIFT		(32 - ZONES_SHIFT)
-#define ZONETABLE_MASK		((1UL << ZONES_SHIFT) - 1)
-
-extern struct zone *zone_table[MAX_NR_ZONES];
-static inline struct zone *page_zone(struct page *page) {
-  return zone_table[(page->flags >> ZONETABLE_PGSHIFT) & ZONETABLE_MASK];
-}
-#endif
+#define SetPageSlab(page) __set_bit(PG_slab,(page)->flags)

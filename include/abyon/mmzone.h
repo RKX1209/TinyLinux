@@ -14,6 +14,8 @@
 
 #define MAX_NR_ZONES		3	/* Sync this with ZONES_SHIFT */
 #define ZONES_SHIFT		2	/* ceil(log2(MAX_NR_ZONES)) */
+#define GFP_ZONEMASK	0x03
+#define GFP_ZONETYPES	((GFP_ZONEMASK + 1) / 2 + 1)
 
 struct bootmem_data;
 
@@ -32,8 +34,13 @@ struct zone{
   unsigned long zone_start_pfn;
 };
 
+struct zonelist{
+  struct zone *zones[MAX_NR_ZONES * 1 + 1];
+};
+
 typedef struct pglist_data{
   struct zone node_zones[MAX_NR_ZONES];
+  struct zonelist node_zonelists[GFP_ZONETYPES];
   int nr_zones;
   struct page *node_mem_map;
   int node_id;
@@ -52,7 +59,6 @@ static inline struct zone *next_zone(struct zone *zone){
   return zone;
 }
 
-
 #define node_localnr(pfn, nid) ((pfn) - node_data[nid].node_start_pfn)
 #define node_mem_map(nid) (NODE_DATA(nid)->node_mem_map)
 
@@ -68,5 +74,4 @@ static inline struct zone *next_zone(struct zone *zone){
 			  &node_mem_map(__node)[node_localnr(__pfn,__node)]; \
     })
 
-  
 #endif

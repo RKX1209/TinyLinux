@@ -21,22 +21,27 @@ extern void kernel_main(void);
 
 void kernel_main(void){
   printk("Welcome to Abyon kernel!");
-  setup_arch();
+  setup_arch();//init e820, bootmem, pagetable(pgd,pte...), fix area  paging on
   
-  sched_init();
+  sched_init(); //init runqueue, current <= idle_proc
 
-  trap_init();
+  trap_init(); //init trap tables
 
-  init_IRQ();
+  init_IRQ(); //init 8259A, IQR table[i] = interrupt[i] => do_IRQ(entry.S), init PIT
 
-  init_timers();
+  init_timers();//init softirq[TIMER_SOFTIRQ] => timer
 
-  softirq_init();
+  softirq_init();//init softirq[TASKLET,HI_SOFTIRQ]
 
   local_irq_enable();
   
   key_int();
 
+  vfs_caches_init_early();//init dentry cache, init inode cache
+
+  //mem_init(); //free bootmem area
+
+  
 
   printk("Enter sleeping...");
   for(;;){

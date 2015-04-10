@@ -8,6 +8,7 @@
 
 #include <abyon/mm.h>
 
+#include <asm/dma.h>
 #include <asm/pgtable.h>
 
 
@@ -35,8 +36,26 @@ extern void *  __alloc_bootmem_core(struct bootmem_data *bdata, unsigned long si
 extern void free_bootmem (unsigned long addr, unsigned long size);
 extern void reserve_bootmem (unsigned long addr, unsigned long size);
 
+#define alloc_bootmem(x) \
+  __alloc_bootmem((x), (1 << 6), (MAX_DMA_ADDRESS))
+
 #define alloc_bootmem_low_pages(x) \
   __alloc_bootmem((x), PAGE_SIZE, 0)
+
+extern unsigned long nr_kernel_pages;
+extern unsigned long nr_all_pages;
+
+extern void *alloc_large_system_hash(const char *tablename,
+					    unsigned long bucketsize,
+					    unsigned long numentries,
+					    int scale,
+					    int flags,
+					    unsigned int *_hash_shift,
+					    unsigned int *_hash_mask,
+					    unsigned long limit);
+
+#define HASH_HIGHMEM	0x00000001
+#define HASH_EARLY	0x00000002
 
 static inline void *__alloc_bootmem (unsigned long size, unsigned long align, unsigned long goal)
 {

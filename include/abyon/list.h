@@ -80,4 +80,17 @@ static inline void list_splice_init(struct list_head *list,
 
 #define list_entry(ptr, type, member) \
 	container_of(ptr, type, member)
+
+struct hlist_head {
+	struct hlist_node *first;
+};
+
+struct hlist_node {
+	struct hlist_node *next, **pprev;
+};
+
+#define HLIST_HEAD_INIT { .first = 0 }
+#define HLIST_HEAD(name) struct hlist_head name = {  .first = 0 }
+#define INIT_HLIST_HEAD(ptr) ((ptr)->first = 0)
+#define INIT_HLIST_NODE(ptr) ((ptr)->next = 0, (ptr)->pprev = 0)
 #endif

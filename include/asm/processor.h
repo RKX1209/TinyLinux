@@ -24,6 +24,8 @@ DECLARE_PER_CPU(struct tss_struct, init_tss);
 #define INVALID_IO_BITMAP_OFFSET 0x8000
 #define INVALID_IO_BITMAP_OFFSET_LAZY 0x9000
 
+#define cache_line_size() (128)
+
 struct tss_struct {
   unsigned short back_link,__blh;
   unsigned long	esp0;

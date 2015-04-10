@@ -2,6 +2,9 @@
  * include/asm/bitops.h
  * Copyright (C) <2014>  <@RKX1209>
  */
+#ifndef _ASM_BITOPS_H
+#define _ASM_BITOPS_H
+
 static inline int test_and_set_bit(int nr, volatile unsigned long * addr)
 {
   unsigned long index = nr / 32;
@@ -92,3 +95,4 @@ static inline int ffs(int x){
 	return r+1;
 }
 
+#endif

@@ -75,7 +75,7 @@ int vsnprintf(char *buf, unsigned long size, const char *fmt, va_list args){
       len = strnlen(s,-1);
       for(i = 0; i < len; i++){
 	if(str <= end) *str = *s;
-	++str;
+	++str;++s;
       }
       continue;
     case 'x':

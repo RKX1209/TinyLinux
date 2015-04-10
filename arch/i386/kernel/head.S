@@ -38,12 +38,12 @@ startup_32:
 	movl %eax,%ss	
 
 	/* Clear BSS */
-/*	xorl %eax, %eax
+	xorl %eax, %eax
 	movl $_bss_start ,%edi
 	movl $_bss_end ,%ecx
 	subl %edi,%ecx
 	shrl $2,%ecx
-	rep ; stosl */
+	rep ; stosl 
 
 	/* Set global directory for (8-MB) temporary memory
 	 * EAX = page frame number
