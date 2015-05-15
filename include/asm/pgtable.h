@@ -8,10 +8,14 @@
 
 #include <abyon/init_task.h>
 
+#include <asm/fixmap.h>
 #include <asm/page.h>
 #include <asm/system.h>
 
 extern pgd_t swapper_pg_dir[1024];
+
+#define VMALLOC_START (896 * 1024 * 1024)
+#define VMALLOC_END FIXADDR_START - 2 * PAGE_SIZE
 
 #define PTRS_PER_PGD 1024 //entries per one pgd
 #define PTRS_PER_PTE 1024 //entries per one pte

@@ -40,7 +40,7 @@ void kernel_main(void){
   vfs_caches_init_early();//init dentry cache, init inode cache
 
   //mem_init(); //free bootmem area
-
+  //kmem_cache_init(); //init slab allocator
   
 
   printk("Enter sleeping...");

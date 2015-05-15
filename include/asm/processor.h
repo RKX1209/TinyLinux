@@ -79,6 +79,7 @@ struct thread_struct {
 	.io_bitmap_ptr = NULL,						\
 }
 
+#define THREAD_SIZE (2 * PAGE_SIZE)
 static inline void load_esp0(struct tss_struct *tss, struct thread_struct *thread){
   tss->esp0 = thread->esp0;
 }

@@ -8,9 +8,13 @@
 		  $(ARCH_MM)/init.o \
 		  $(ARCH_LIB)/memcpy.o $(ARCH_LIB)/bitops.o \
 		  $(MM)/bootmem.o $(MM)/page_alloc.o $(MM)/slab.o \
-		  $(FS)/dcache.o $(FS)/inode.o \
+		  $(FS)/file_table.o $(FS)/dcache.o $(FS)/inode.o $(FS)/namespace.o \
+		  $(FS)/filesystem.o $(FS)/super.o $(FS)/block_dev.o $(FS)/char_dev.o \
+		  $(FS_RAMFS)/inode.o \
+		  $(FS_SYSFS)/mount.o \
 		  $(LIB)/vsprintf.o \
 		  $(DRIVERS_VRAM)/disp.o \
+		  $(DRIVERS_BASE)/map.o \
 		  $(ARCH_KERNEL)/tail.o
 
 HOME_DIR	= ..
@@ -55,11 +59,14 @@ MM		= ../mm
 
 #---FS path-------------
 FS		= ../fs
+FS_RAMFS	= ../fs/ramfs
+FS_SYSFS	= ../fs/sysfs
 #-------------------------
 
-#---Lib path-------------
+#---Drivers path-------------
 DRIVERS		= ../drivers
 DRIVERS_VRAM	= $(DRIVERS)/vram
+DRIVERS_BASE	= $(DRIVERS)/base
 #-------------------------
 
 #---Lib path-------------
@@ -124,6 +131,12 @@ $(FS)/%.o : $(FS)/%.c Makefile
 
 $(FS)/%.o : $(FS)/%.S Makefile
 	$(CC) -o $(FS)/$*.o $(FS)/$*.S $(ASFLAGS)
+
+$(FS_RAMFS)/%.o : $(FS_RAMFS)/%.c Makefile
+	$(CC) -m32 -c -o $(FS_RAMFS)/$*.o $(FS_RAMFS)/$*.c $(CFLAGS)
+
+$(FS_RAMFS)/%.o : $(FS_RAMFS)/%.S Makefile
+	$(CC) -o $(FS_RAMFS)/$*.o $(FS_RAMFS)/$*.S $(ASFLAGS)
 
 $(LIB)/%.o : $(LIB)/%.c Makefile
 	$(CC) -m32 -c -o $(LIB)/$*.o $(LIB)/$*.c $(CFLAGS)

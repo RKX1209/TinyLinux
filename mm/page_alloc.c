@@ -66,6 +66,14 @@ struct page * __alloc_pages(unsigned int gfp_mask,unsigned int order,struct zone
  got_pg:  
   return page;
 }
+
+unsigned long __get_free_pages(unsigned int gfp_mask,unsigned int order){
+  struct page *page = alloc_pages(gfp_mask,order);
+  if(!page) return 0;
+  //return (unsigned long)page_address(page);
+  return 0;
+}
+
 unsigned long nr_free_pages(void){
   unsigned int sum = 0;
   struct zone *zone;

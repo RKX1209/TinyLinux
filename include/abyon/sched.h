@@ -56,7 +56,7 @@ struct mm_struct{
   unsigned long mm_count;
   pgd_t *pgd;
 };
-
+struct namespace;
 struct task_struct{
   long state;
   struct thread_info *thread_info;
@@ -68,6 +68,9 @@ struct task_struct{
   unsigned long policy;
   struct mm_struct *mm,*active_mm;
   struct thread_struct thread;
+  struct namespace *namespace;
+  struct task_struct *next_task;
+  struct fs_struct *fs;
 };
 
 static inline void set_task_cpu(struct task_struct *p, unsigned int cpu){

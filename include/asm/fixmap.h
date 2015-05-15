@@ -37,6 +37,7 @@ enum fixed_addresses {
 };
 
 #define FIXADDR_TOP	((unsigned long)__FIXADDR_TOP)
+#define FIXADDR_START FIXADDR_TOP
 
 /* Exchange fix index and virtual address */
 #define __fix_to_virt(x) (FIXADDR_TOP - ((x) << PAGE_SHIFT))

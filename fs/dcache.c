@@ -4,8 +4,15 @@
  */
 
 #include <abyon/bootmem.h>
+#include <abyon/dcache.h>
+#include <abyon/fs.h>
+#include <abyon/kernel.h>
+#include <abyon/limits.h>
 #include <abyon/list.h>
 
+typedef struct kmem_cache kmem_cache_t;
+
+extern struct files_stat_struct files_stat;
 static unsigned int d_hash_mask;
 static unsigned int d_hash_shift;
 static struct hlist_head *dentry_hashtable;
@@ -13,6 +20,16 @@ static unsigned long dhash_entries;
 
 extern void inode_init_early(void);
 extern int printk(const char *fmt, ...);
+
+static kmem_cache_t *dentry_cache;
+static LIST_HEAD(dentry_unused);
+
+/* SLAB cache for __getname() consumers */
+kmem_cache_t *names_cachep;
+/* SLAB cache for file structures */
+kmem_cache_t *filp_cachep;
+/* SLAB cache for inode */
+kmem_cache_t *inode_cachep;
 
 void dcache_init_early(void){
   dhash_entries = 1024;
@@ -36,6 +53,53 @@ void vfs_caches_init_early(void){
   printk("vfs_init_early... [OK]");
 }
 
+static void dcache_init(unsigned long mempages){
+  dentry_cache = kmem_cache_create("dentry_cache",
+				   sizeof(struct dentry),
+				   0,0,0,0);
+}
+
+static void inode_init(unsigned long mempages){
+  inode_cachep = kmem_cache_create("inode_cache",
+				   sizeof(struct inode),
+				   0,0,0,0);
+}
+
+void files_init(unsigned long mempages){
+  int n = (mempages * (PAGE_SIZE / 1024)) / 10;
+  files_stat.max_files = n;
+  if(files_stat.max_files < NR_FILE)
+    files_stat.max_files = NR_FILE;  
+}
+
+extern void bdev_cache_init(void);
+extern void cdev_cache_init(void);
+
 void vfs_caches_init(unsigned long mempages){
-  
+  unsigned long reserve = min((mempages - nr_free_pages()) * 3 / 2,
+			      mempages - 1);
+  mempages -= reserve;
+  names_cachep = kmem_cache_create("names_cache",PATH_MAX,0,
+				   0,0,0);
+  filp_cachep = kmem_cache_create("filp",sizeof(struct file),0,
+				   0,0,0);
+  dcache_init(mempages);
+  inode_init(mempages);
+  files_init(mempages);
+  mnt_init(mempages);
+  bdev_cache_init();
+  chrdev_init();
+}
+
+void dput(struct dentry *dentry){
+  if(!dentry) return;
+  dentry->d_count--;
+  /* It has been referenced by some process yet */
+  if(dentry->d_count){
+    return;
+  }
+  if(list_empty(&dentry->d_lru)){
+    list_add(&dentry->d_lru,&dentry_unused);
+  }
+  return;
 }

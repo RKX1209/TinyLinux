@@ -18,6 +18,7 @@ cp -r ./boot /tmp/Abyon
 cp -r ./include /tmp/Abyon
 cp -r ./kernel /tmp/Abyon
 cp -r ./mm /tmp/Abyon
+cp -r ./fs /tmp/Abyon
 cp -r ./lib /tmp/Abyon
 cp -r ./drivers /tmp/Abyon
 cp -r ./ldscript /tmp/Abyon

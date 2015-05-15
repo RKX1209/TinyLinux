@@ -15,11 +15,15 @@
 #include <abyon/slab.h>
 
 #define	BYTES_PER_WORD		sizeof(void *)
-#define BUFCTL_END	(((unsigned int)(~0U))-0)
 #define BOOT_CPUCACHE_ENTRIES	1
 
 #define SET_PAGE_CACHE(pg,x) ((pg)->lru.next = (struct list_head*)(x))
 #define SET_PAGE_SLAB(pg,x) ((pg)->lru.prev = (struct list_head*)(x))
+
+typedef unsigned int kmem_bufctl_t;
+#define BUFCTL_END	(((kmem_bufctl_t)(~0U))-0)
+#define BUFCTL_FREE	(((kmem_bufctl_t)(~0U))-1)
+#define	SLAB_LIMIT	(((kmem_bufctl_t)(~0U))-2)
 
 struct array_cache{
   unsigned int avail;
@@ -70,6 +74,7 @@ struct slab{
   unsigned int free;
 };
 
+typedef struct slab slab_t;
 static struct semaphore	cache_chain_sem;
 static struct list_head cache_chain;
 
@@ -219,6 +224,14 @@ void *kmem_cache_alloc(kmem_cache_t *cachep,int flags){
   return __cache_alloc(cachep,flags);
 }
 
+/* Free objp in cachep */
+void kmem_cache_free(kmem_cache_t *cachep, void *objp) {
+  slab_t *slabp = (slab_t*)virt_to_page((unsigned long)objp)->lru.prev;
+  unsigned int objnr = (objp - slabp->s_mem) / cachep->objsize;
+  list_del(&slabp->list);
+  list_add(&slabp->list,&cachep->lists.slabs_free);
+}
+
 /* Create kmem_cache_t */
 kmem_cache_t *kmem_cache_create(const char *name,unsigned long size,unsigned long align,
 				unsigned long flags,
@@ -239,6 +252,21 @@ kmem_cache_t *kmem_cache_create(const char *name,unsigned long size,unsigned lon
   return cachep;
 }
 
+void *kmalloc(unsigned long size,int flags){
+  struct cache_sizes *csizep = malloc_sizes;
+  for(;csizep->cs_size; csizep++){
+    if(size > csizep->cs_size) continue;
+    return __cache_alloc(csizep->cs_cachep,flags);
+  }
+  return 0;
+}
+
+void *kfree(const void *objp){
+  if(!objp) return;
+  kmem_cache_t *c = (kmem_cache_t*)(virt_to_page((unsigned long)objp))->lru.next;
+  kmem_cache_free(c,(void*)objp);  
+}
+
 void kmem_cache_init(void){
   unsigned long left_over = 128;
   struct cache_sizes *sizes;
@@ -252,8 +280,7 @@ void kmem_cache_init(void){
   cache_cache.objsize = ALIGN(cache_cache.objsize,cache_line_size());
   cache_cache.colour = left_over / cache_cache.colour_off;
   cache_cache.colour_next = 0;
-  cache_cache.slab_size = ALIGN(cache_cache.num * sizeof(unsigned int) + sizeof(struct slab),
-				cache_line_size());
+  cache_cache.slab_size = ALIGN(cache_cache.num * sizeof(unsigned int) + sizeof(struct slab),cache_line_size());
   sizes = malloc_sizes;
   names = cache_names;
   while(sizes->cs_size){

@@ -42,4 +42,16 @@ static inline int long_log2(unsigned long x) {
 unsigned long long divmodk(unsigned long long num, unsigned long long den, unsigned long long *rem_p);
 unsigned long long divk(unsigned long long num, unsigned long long den);
 unsigned long long modk(unsigned long long num, unsigned long long den);
+#define max(x,y) ({ \
+	typeof(x) _x = (x);	\
+	typeof(y) _y = (y);	\
+	(void) (&_x == &_y);		\
+_x > _y ? _x : _y; \
+})
+#define min(x,y) ({ \
+	typeof(x) _x = (x);	\
+	typeof(y) _y = (y);	\
+	(void) (&_x == &_y);		\
+	_x < _y ? _x : _y; \
+})
 #endif
