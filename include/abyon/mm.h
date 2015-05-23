@@ -2,11 +2,13 @@
  * include/abyon/mm.h
  * Copyright (C) <2014>  <@RKX1209>
  */
+
 #ifndef _ABYON_MM_H
 #define _ABYON_MM_H
 
 #include <abyon/list.h>
 #include <abyon/mmzone.h>
+#include <abyon/rbtree.h>
 
 struct page{
   unsigned long flags;
@@ -48,4 +50,13 @@ extern struct zone *zone_table[MAX_NR_ZONES];
 static inline struct zone *page_zone(struct page *page) {
   return zone_table[(page->flags >> ZONETABLE_PGSHIFT) & ZONETABLE_MASK];
 }
+
+struct vm_area_struct{
+  struct mm_struct *vm_mm;
+  unsigned long vm_start;
+  unsigned long vm_end;
+  struct vm_area_struct *vm_next;
+  unsigned long vm_flags;
+  struct rb_node vm_rb;
+};
 #endif

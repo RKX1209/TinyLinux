@@ -6,6 +6,7 @@
 #define _ABYON_SCHED_H
 
 #include <abyon/list.h>
+#include <abyon/rbtree.h>
 #include <abyon/signal.h>
 #include <abyon/thread_info.h>
 
@@ -53,6 +54,8 @@ typedef struct runqueue{
 }runqueue_t;
 
 struct mm_struct{
+  struct vm_area_struct *mmap;
+  struct rb_root mm_rb;
   unsigned long mm_count;
   pgd_t *pgd;
 };
@@ -70,6 +73,9 @@ struct task_struct{
   struct thread_struct thread;
   struct namespace *namespace;
   struct task_struct *next_task;
+  unsigned long long timestamp;
+  unsigned int time_slice;
+  unsigned int first_time_slice;
   struct fs_struct *fs;
 };
 

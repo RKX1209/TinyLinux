@@ -31,6 +31,9 @@ union thread_union{
 #define init_thread_info	(init_thread_union.thread_info)
 #define init_stack		(init_thread_union.stack)
 
+#define alloc_thread_info(tsk) kmalloc(THREAD_SIZE,0)
+#define free_thread_info(info) kfree(info)
+
 static inline struct thread_info *current_thread_info(void){
   struct thread_info *ti;
   __asm__("andl %%esp,%0; ":"=r"(ti) : "0" ((~(THREAD_SIZE - 1))));

@@ -16,6 +16,7 @@ extern void init_IRQ();
 extern void init_timers();
 extern void softirq_init();
 extern void key_int();
+extern void pgtable_cache_init(void);
 extern void kernel_main(void);
 
 
@@ -42,7 +43,9 @@ void kernel_main(void){
   //mem_init(); //free bootmem area
   //kmem_cache_init(); //init slab allocator
   
+  pgtable_cache_init();
 
+  vfs_caches_init();
   printk("Enter sleeping...");
   for(;;){
     io_hlt();

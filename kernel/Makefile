@@ -1,18 +1,20 @@
  OBJS		= $(ARCH_KERNEL)/head.o $(KERNEL)/main.o $(KERNEL)/gasfunc\
 		  $(KERNEL)/sched.o $(KERNEL)/printk.o $(KERNEL)/timer.o $(KERNEL)/softirq.o \
+		  $(KERNEL)/pid.o \
 		  $(KERNEL_IRQ)/manage.o \
 		  $(ARCH_KERNEL)/setup.o $(ARCH_KERNEL)/traps.o $(ARCH_KERNEL)/entry.o \
 		  $(ARCH_KERNEL)/init_task.o $(ARCH_KERNEL)/i8259.o $(ARCH_KERNEL)/irq.o \
 		  $(ARCH_KERNEL_CPU)/common.o \
-		  $(ARCH_KERNEL_TIMERS)/timer_pit.o \
+		  $(ARCH_KERNEL_TIMERS)/timer_pit.o $(ARCH_KERNEL_TIMERS)/timer_tsc.o \
 		  $(ARCH_MM)/init.o \
 		  $(ARCH_LIB)/memcpy.o $(ARCH_LIB)/bitops.o \
-		  $(MM)/bootmem.o $(MM)/page_alloc.o $(MM)/slab.o \
+		  $(MM)/bootmem.o $(MM)/page_alloc.o $(MM)/slab.o $(MM)/pgtable.o \
+		  $(MM)/mmap.o $(MM)/memory.o \
 		  $(FS)/file_table.o $(FS)/dcache.o $(FS)/inode.o $(FS)/namespace.o \
 		  $(FS)/filesystem.o $(FS)/super.o $(FS)/block_dev.o $(FS)/char_dev.o \
 		  $(FS_RAMFS)/inode.o \
 		  $(FS_SYSFS)/mount.o \
-		  $(LIB)/vsprintf.o \
+		  $(LIB)/vsprintf.o $(LIB)/rbtree.o \
 		  $(DRIVERS_VRAM)/disp.o \
 		  $(DRIVERS_BASE)/map.o \
 		  $(ARCH_KERNEL)/tail.o

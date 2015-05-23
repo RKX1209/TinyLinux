@@ -168,3 +168,15 @@ max /= bucketsize;
   if(_hash_mask) *_hash_mask = (1 << log2qty) - 1;
   return table;
 }
+
+unsigned long get_zeroed_page(unsigned int gfp_mask){
+  struct page *page = alloc_pages(gfp_mask,0);
+  if(page){
+    //void *address = page_address(page);
+    void *address = 0;
+    //clear_page(address);
+    return (unsigned long)address;
+  }
+  return 0;
+  
+}

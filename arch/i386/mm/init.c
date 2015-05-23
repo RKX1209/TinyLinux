@@ -6,6 +6,7 @@
 #include <abyon/init_task.h>
 #include <abyon/mm.h>
 #include <abyon/sched.h>
+#include <abyon/slab.h>
 
 #include <asm/bitops.h>
 #include <asm/e820.h>
@@ -138,6 +139,12 @@ static void kernel_physical_mapping_init(pgd_t *pgd_base){
   printk("Setting memory tables... [OK]");
 }
 
+kmem_cache_t *pgd_cache;
+void pgtable_cache_init(void){
+  pgd_cache = kmem_cache_create("pgd",
+				PTRS_PER_PGD*sizeof(pgd_t),
+				PTRS_PER_PGD*sizeof(pgd_t),0,0,0);
+}
 
 static void pagetable_init(void){
   /* Set page tables of "straight map area" */

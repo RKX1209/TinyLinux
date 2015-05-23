@@ -24,5 +24,5 @@ struct cache_sizes{
   struct kmem_cache *cs_cachep;
   struct kmem_cache *cs_dmacachep;
 };
-
+typedef struct kmem_cache kmem_cache_t;
 #endif
