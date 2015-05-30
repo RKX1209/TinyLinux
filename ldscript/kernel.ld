@@ -45,6 +45,11 @@ SECTIONS
     . += 0x3000; /* font data area */
     . = ALIGN(4096);
 
+    _initramfs_start = .;
+    . += 0x3000; /* font data area */
+    . = ALIGN(4096);
+    _initramfs_end = .;
+    
     .bss :
     {
         _bss_start = .;

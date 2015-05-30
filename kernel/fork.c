@@ -4,7 +4,10 @@
  */
 
 #include <abyon/fs_struct.h>
+#include <abyon/mm.h>
 #include <abyon/rbtree.h>
+#include <abyon/sched.h>
+#include <abyon/slab.h>
 
 #include <asm/bitops.h>
 #include <asm/cache.h>
@@ -17,11 +20,15 @@
 #define free_mm(mm)	(kmem_cache_free(mm_cachep, (mm)))
 
 static kmem_cache_t *task_struct_cachep;
+static kmem_cache_t *mm_cachep;
+static kmem_cache_t *vm_area_cachep;
+static kmem_cache_t *fs_cachep;
+
 int max_threads;
 
 void fork_init(unsigned long mempages){
   #define ARCH_MIN_TASKALIGN L1_CACHE_BYTES
-  task_struct_cachep = kmem_cache_create("task_struct",sizeof(task_struct),
+  task_struct_cachep = kmem_cache_create("task_struct",sizeof(struct task_struct),
 					 ARCH_MIN_TASKALIGN,0,0,0);
   max_threads = mempages / (8 * THREAD_SIZE / PAGE_SIZE);
   if(max_threads < 20) max_threads = 20;
@@ -51,7 +58,7 @@ static struct mm_struct *mm_init(struct mm_struct *mm){
 static inline int dup_mmap(struct mm_struct *mm, struct mm_struct *oldmm){
   mm->mmap = 0;
   mm->map_count = 0;
-  mm->mm_rb = (struct rb_node){0,}
+  mm->mm_rb = (struct rb_root){0};
   struct rb_node **rb_link = &mm->mm_rb.rb_node;
   struct rb_node *rb_parent = 0;
   struct vm_area_struct *mpnt;
@@ -99,15 +106,22 @@ void sched_fork(task_t *p){
   p->time_slice = sched_clock();
 }
 
-static task_struct *copy_process(unsigned long clone_flags,
-				 unsigned long stack_start,
-				 struct pt_regs *regs,
-				 unsigned long stack_size,
-				 int *parent_tidptr,
-				 int *child_tidptr,				
-				 int pid){
+int copy_thread(int nr, unsigned long clone_flags, unsigned long esp,
+		unsigned long unused,
+		struct task_struct * p, struct pt_regs * regs){
+  
+}
+
+static struct task_struct *copy_process(unsigned long clone_flags,
+					unsigned long stack_start,
+					struct pt_regs *regs,
+					unsigned long stack_size,
+					int *parent_tidptr,
+					int *child_tidptr,				
+					int pid){
   struct task_struct *p = dup_task_struct(current);
   copy_mm(clone_flags,p);
+  copy_thread(0,clone_flags,stack_start,stack_size,p,regs);
   copy_fs(clone_flags,p);
   sched_fork(p);
   return p;  

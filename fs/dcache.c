@@ -10,6 +10,12 @@
 #include <abyon/limits.h>
 #include <abyon/list.h>
 
+#define GOLDEN_RATIO_PRIME 0x9e370001UL
+static unsigned int d_hash_shift;
+static unsigned int d_hash_mask;
+#define D_HASHBITS     d_hash_shift
+#define D_HASHMASK     d_hash_mask
+
 typedef struct kmem_cache kmem_cache_t;
 
 extern struct files_stat_struct files_stat;
@@ -102,4 +108,35 @@ void dput(struct dentry *dentry){
     list_add(&dentry->d_lru,&dentry_unused);
   }
   return;
+}
+
+static inline struct hlist_head *d_hash(struct dentry *parent,unsigned long hash){
+  hash += ((unsigned long) parent ^ GOLDEN_RATIO_PRIME);
+  hash = hash ^ ((hash ^ GOLDEN_RATIO_PRIME) >> D_HASHBITS);
+  return dentry_hashtable + (hash & D_HASHMASK);
+}
+
+struct dentry * __d_lookup(struct dentry *parent,struct qstr *name){
+  unsigned int len = name->len;
+  unsigned int hash = name->hash;
+  const unsigned char *str = name->name;
+  struct hlist_head *head = d_hash(parent,hash);
+struct dentry *found = 0;
+struct hlist_node *node;
+for(node = head->first; node; node = node->next){
+struct dentry *dentry = list_entry(node,struct dentry,d_hash);
+struct qstr *qstr;
+if (dentry->d_name.hash != hash)
+  continue;
+if (dentry->d_parent != parent)
+  continue;
+qstr = &dentry->d_name;
+found = dentry;
+}
+return found;
+}
+
+struct dentry * d_lookup(struct dentry * parent, struct qstr * name) {
+  struct dentry *dentry = 0;
+return dentry;
 }

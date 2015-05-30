@@ -1,9 +1,9 @@
  OBJS		= $(ARCH_KERNEL)/head.o $(KERNEL)/main.o $(KERNEL)/gasfunc\
 		  $(KERNEL)/sched.o $(KERNEL)/printk.o $(KERNEL)/timer.o $(KERNEL)/softirq.o \
-		  $(KERNEL)/pid.o \
+		  $(KERNEL)/pid.o $(KERNEL)/fork.o $(KERNEL)/exit.o $(KERNEL)/initramfs.o $(KERNEL)/sys.o \
 		  $(KERNEL_IRQ)/manage.o \
 		  $(ARCH_KERNEL)/setup.o $(ARCH_KERNEL)/traps.o $(ARCH_KERNEL)/entry.o \
-		  $(ARCH_KERNEL)/init_task.o $(ARCH_KERNEL)/i8259.o $(ARCH_KERNEL)/irq.o \
+		  $(ARCH_KERNEL)/init_task.o $(ARCH_KERNEL)/i8259.o $(ARCH_KERNEL)/irq.o $(ARCH_KERNEL)/process.o \
 		  $(ARCH_KERNEL_CPU)/common.o \
 		  $(ARCH_KERNEL_TIMERS)/timer_pit.o $(ARCH_KERNEL_TIMERS)/timer_tsc.o \
 		  $(ARCH_MM)/init.o \
@@ -12,6 +12,7 @@
 		  $(MM)/mmap.o $(MM)/memory.o \
 		  $(FS)/file_table.o $(FS)/dcache.o $(FS)/inode.o $(FS)/namespace.o \
 		  $(FS)/filesystem.o $(FS)/super.o $(FS)/block_dev.o $(FS)/char_dev.o \
+		  $(FS)/exec.o $(FS)/namei.o \
 		  $(FS_RAMFS)/inode.o \
 		  $(FS_SYSFS)/mount.o \
 		  $(LIB)/vsprintf.o $(LIB)/rbtree.o \

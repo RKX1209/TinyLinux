@@ -33,6 +33,16 @@
 #define SCHED_RR		2
 #define BITMAP_SIZE ((((MAX_PRIO + 8) / 8) + sizeof(long) - 1) / sizeof(long))
 
+#define NGROUPS_PER_BLOCK	((int)(PAGE_SIZE / sizeof(unsigned int)))
+
+struct group_info{
+  int ngroups;
+  int nblocks;
+  unsigned int *blocks[0];
+};
+
+#define GROUP_AT(gi,i) \
+  ( (gi)->blocks[(i)/NGROUPS_PER_BLOCK][(i) % NGROUPS_PER_BLOCK])
 
 typedef struct task_struct task_t;
 
@@ -50,13 +60,14 @@ typedef struct runqueue{
   prio_array_t *active,*expired,arrays[2];
   task_t *curr,*idle;
   int best_expired_prio;
-  
+  unsigned long nr_switches;
 }runqueue_t;
 
 struct mm_struct{
   struct vm_area_struct *mmap;
   struct rb_root mm_rb;
   unsigned long mm_count;
+  unsigned long map_count;
   pgd_t *pgd;
 };
 struct namespace;
@@ -76,7 +87,11 @@ struct task_struct{
   unsigned long long timestamp;
   unsigned int time_slice;
   unsigned int first_time_slice;
+  unsigned long uid,euid,suid,fsuid;
+  unsigned long gid,egid,sgid,fsgid;
   struct fs_struct *fs;
+  int activated;
+  struct group_info* group_info;
 };
 
 static inline void set_task_cpu(struct task_struct *p, unsigned int cpu){

@@ -5,7 +5,11 @@
 
 #ifndef _ABYON_MOUNT_H
 #define _ABYON_MOUNT_H
+
+#include <abyon/list.h>
+
 struct vfsmount{
+  struct vfsmount *mnt_parent;
   struct dentry *mnt_mountpoint;
   struct dentry *mnt_root;
   struct list_head mnt_mounts;
@@ -16,4 +20,5 @@ struct vfsmount{
   unsigned long mnt_count;
 };
 
+struct list_head mnt_hash;
 #endif

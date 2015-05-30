@@ -58,4 +58,22 @@
 /* Enable Interupt (set IF = 1) */
 #define local_irq_enable() __asm__ __volatile__("sti": : :"memory")
 #define local_irq_save(x) __asm__ __volatile__("pushfl ; popl %0 ; cli":"=g" (x): /* no input */ :"memory")
+
+#define switch_to(prev,next,last) do{ \
+  unsigned long esi,edi; \
+__asm__ __volatile__("pushfl\n\t"\
+		     "pushl %%ebp\n\t" \
+		     "movl %%esp,%0\n\t" \
+		     "movl %5,%%esp\n\t" \
+		     "movl $1f,%1\n\t"\
+		     "pushl %6\n\t" \
+		     "jmp __switch_to\n" \
+		     "1:\t" \
+		     "popl %%ebp\n\t" \
+		     "popfl" \
+		     :"=m" (prev->thread.esp),"=m" (prev->thread.eip), \	
+		      "=a" (last),"=S" (esi),"=D" (edi)	\
+		     :"m" (next->thread.esp),"m" (next->thread.eip), \
+		      "2" (prev), "d" (next)); \
+}while(0)
 #endif
