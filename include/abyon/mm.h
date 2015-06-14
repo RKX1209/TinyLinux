@@ -12,7 +12,8 @@
 
 struct page{
   unsigned long flags;
-  
+  struct address_space *mapping;
+  unsigned long index;
   unsigned long _count;
   unsigned long private;
   struct list_head lru;

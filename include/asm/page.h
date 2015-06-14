@@ -10,6 +10,8 @@
 #define PAGE_SHIFT	12
 #define PAGE_SIZE	(1UL << PAGE_SHIFT)
 #define PAGE_MASK       (~(PAGE_SIZE - 1))
+#define PAGE_CACHE_SHIFT PAGE_SHIFT
+#define PAGE_CACHE_SIZE PAGE_SIZE
 
 /* Virtual page tables */
 typedef struct { unsigned long pte_low; } pte_t;

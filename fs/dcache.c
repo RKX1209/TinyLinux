@@ -88,7 +88,7 @@ void vfs_caches_init(unsigned long mempages){
   names_cachep = kmem_cache_create("names_cache",PATH_MAX,0,
 				   0,0,0);
   filp_cachep = kmem_cache_create("filp",sizeof(struct file),0,
-				   0,0,0);
+				  0,0,0);
   dcache_init(mempages);
   inode_init(mempages);
   files_init(mempages);
@@ -121,22 +121,22 @@ struct dentry * __d_lookup(struct dentry *parent,struct qstr *name){
   unsigned int hash = name->hash;
   const unsigned char *str = name->name;
   struct hlist_head *head = d_hash(parent,hash);
-struct dentry *found = 0;
-struct hlist_node *node;
-for(node = head->first; node; node = node->next){
-struct dentry *dentry = list_entry(node,struct dentry,d_hash);
-struct qstr *qstr;
-if (dentry->d_name.hash != hash)
-  continue;
-if (dentry->d_parent != parent)
-  continue;
-qstr = &dentry->d_name;
-found = dentry;
-}
-return found;
+  struct dentry *found = 0;
+  struct hlist_node *node;
+  for(node = head->first; node; node = node->next){
+    struct dentry *dentry = list_entry(node,struct dentry,d_hash);
+    struct qstr *qstr;
+    if (dentry->d_name.hash != hash)
+      continue;
+    if (dentry->d_parent != parent)
+      continue;
+    qstr = &dentry->d_name;
+    found = dentry;
+  }
+  return found;
 }
 
 struct dentry * d_lookup(struct dentry * parent, struct qstr * name) {
   struct dentry *dentry = 0;
-return dentry;
+  return dentry;
 }

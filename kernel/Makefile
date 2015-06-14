@@ -12,7 +12,8 @@
 		  $(MM)/mmap.o $(MM)/memory.o \
 		  $(FS)/file_table.o $(FS)/dcache.o $(FS)/inode.o $(FS)/namespace.o \
 		  $(FS)/filesystem.o $(FS)/super.o $(FS)/block_dev.o $(FS)/char_dev.o \
-		  $(FS)/exec.o $(FS)/namei.o \
+		  $(FS)/exec.o $(FS)/namei.o $(FS)/open.o $(FS)/read_write.o $(FS)/binfmt_elf.o \
+		  $(FS)/elevator.o $(FS)/mpage.o \
 		  $(FS_RAMFS)/inode.o \
 		  $(FS_SYSFS)/mount.o \
 		  $(LIB)/vsprintf.o $(LIB)/rbtree.o \
@@ -64,6 +65,7 @@ MM		= ../mm
 FS		= ../fs
 FS_RAMFS	= ../fs/ramfs
 FS_SYSFS	= ../fs/sysfs
+FS_EXT2		= ../fs/ext2
 #-------------------------
 
 #---Drivers path-------------

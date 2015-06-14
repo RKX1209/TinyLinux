@@ -4,8 +4,10 @@
  */
 #ifndef _ABYON_FS_H
 #define _ABYON_FS_H
+
 #include <abyon/list.h>
 #include <abyon/slab.h>
+
 #define NR_FILE 8192
 
 #define MAY_EXEC 1
@@ -40,15 +42,28 @@ extern kmem_cache_t* names_cachep;
 
 #define IS_RDONLY(inode) ( (inode)->i_sb->s_flags & MS_RDONLY)
 
+typedef unsigned long sector_t;
 struct files_stat_struct{
   int nr_files;
   int nr_free_files;
   int max_files;
 };
 
+typedef struct {
+  unsigned int written;
+  unsigned int count;
+  char *buf;  
+}read_descriptor_t;
+  
+struct file_operations{
+  unsigned long (*read)(struct file*, char *, unsigned int, unsigned int);
+  unsigned long (*write)(struct file*, char *, unsigned int, unsigned int);
+};
+
 struct super_block{
   struct dentry *s_root;
   unsigned long s_flags;
+  struct list_head s_files;
 };
 
 struct file_system_type{
@@ -60,16 +75,43 @@ struct file_system_type{
   struct file_system_type *next;
   struct list_head fs_supers;
 };
+
 struct file{
-  
+  struct dentry *f_dentry;
+  struct vfsmount *f_vfsmnt;
+  unsigned int f_flags;
+  int f_pos;
+  struct file_operations *f_op;
+  unsigned int f_uid,f_gid;
+};
+
+struct address_space_operations{
+  int (*readpage)(struct file *, struct page *);
+};
+
+struct address_space{
+  struct inode *host;
+  struct address_space_operations *a_ops;
 };
 
 struct inode{
   unsigned long i_mode;
   unsigned long i_uid,i_gid;
-struct super_block *i_sb;
+  unsigned int i_blkbits;
+  struct super_block *i_sb;
+  struct fileoperations *i_fop;
+  struct address_space *i_mapping;
+  unsigned int i_size;
 };
 
+struct gendisk{
+  int major;
+  int minors;
+  char disk_name[32];
+};
 struct block_device{
+  struct inode *bd_inode;
+  int bd_openers;
+  struct gendisk *bd_disk;
 };
 #endif
