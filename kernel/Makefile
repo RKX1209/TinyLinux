@@ -1,4 +1,4 @@
- OBJS		= $(ARCH_KERNEL)/head.o $(KERNEL)/main.o $(KERNEL)/gasfunc\
+ OBJS		= $(ARCH_KERNEL)/head.o $(KERNEL)/main.o $(KERNEL)/gasfunc \
 		  $(KERNEL)/sched.o $(KERNEL)/printk.o $(KERNEL)/timer.o $(KERNEL)/softirq.o \
 		  $(KERNEL)/pid.o $(KERNEL)/fork.o $(KERNEL)/exit.o $(KERNEL)/initramfs.o $(KERNEL)/sys.o \
 		  $(KERNEL_IRQ)/manage.o \
@@ -19,7 +19,9 @@
 		  $(LIB)/vsprintf.o $(LIB)/rbtree.o \
 		  $(DRIVERS_VRAM)/disp.o \
 		  $(DRIVERS_BASE)/map.o \
-		  $(ARCH_KERNEL)/tail.o
+		  $(ARCH_KERNEL)/tail.o \
+		  $(SECURITY)/security.o \
+		  $(SEABYON)/hooks.o $(SEABYON)/avc.o \
 
 HOME_DIR	= ..
 
@@ -78,6 +80,10 @@ DRIVERS_BASE	= $(DRIVERS)/base
 LIB		= ../lib
 #-------------------------
 
+#---Security path-------------
+SECURITY	= ../security
+SEABYON		= $(SECURITY)/seabyon
+#-----------------------------
 
 LD_SCRIPT_PATH 	= ../ldscript
 LD_SCRIPT	= $(LD_SCRIPT_PATH)/kernel.ld
@@ -149,6 +155,16 @@ $(LIB)/%.o : $(LIB)/%.c Makefile
 $(LIB)/%.o : $(LIB)/%.S Makefile
 	$(CC) -o $(LIB)/$*.o $(LIB)/$*.S $(ASFLAGS)
 
+$(SECURITY)/%.o : $(SECURITY)/%.c Makefile
+	$(CC) -m32 -c -o $(SECURITY)/$*.o $(SECURITY)/$*.c $(CFLAGS)
 
+$(SECURITY)/%.o : $(SECURITY)/%.S Makefile
+	$(CC) -o $(SECURITY)/$*.o $(SECURITY)/$*.S $(ASFLAGS)
+
+$(SEABYON)/%.o : $(SEABYON)/%.c Makefile
+	$(CC) -m32 -c -o $(SEABYON)/$*.o $(SEABYON)/$*.c $(CFLAGS)
+
+$(SEABYON)/%.o : $(SEABYON)/%.S Makefile
+	$(CC) -o $(SEABYON)/$*.o $(SEABYON)/$*.S $(ASFLAGS)
 
 

@@ -22,6 +22,7 @@ cp -r ./fs /tmp/Abyon
 cp -r ./lib /tmp/Abyon
 cp -r ./drivers /tmp/Abyon
 cp -r ./ldscript /tmp/Abyon
+cp -r ./security /tmp/Abyon
 cp Makefile /tmp/Abyon
 cp -r /tmp/Abyon/arch/i386/* /tmp/Abyon/arch/
 #copy_f /tmp/Abyon/arch

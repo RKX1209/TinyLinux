@@ -93,6 +93,7 @@ struct task_struct{
   int activated;
   struct group_info* group_info;
   struct file_struct *files;
+  void *security;
 };
 
 static inline void set_task_cpu(struct task_struct *p, unsigned int cpu){
