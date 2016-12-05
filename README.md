@@ -1,16 +1,16 @@
-Abyon kernel
+Tiny Linux
 ======================
 **Author: rkx1209**  
 **Overview:**  
-Abyon is a tiny kernel aimed to linux like system.  
+Tiny kernel aimed to linux like system.  
 It haven't been stable yet and you should be carefull when running.  
 (explain more detail below)
 
 Installation
 ---------------
 ``` shell
-$ git clone https://github.com/RKX1209/Abyon.git
-$ cd Abyon  
+$ git clone https://github.com/RKX1209/TinyLinux
+$ cd TinyLinux
 $ make install 
 ```
 After building, 'Abyon.img' will be deployed in your current directory.  
